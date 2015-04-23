@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Inbox Buddy",
+  "description": "This extension creates a cute avatar to go alongside your Google Inbox App",
   "version": "1.0",
 
   "browser_action": {
@@ -10,8 +10,28 @@
     "default_popup": "popup.html",
     "default_title": "IT WORKS"
   },
-  "permissions": [
-    "activeTab",
-    "https://ajax.googleapis.com/"
+  // "permissions": [
+  //   "activeTab",
+  //   "https://ajax.googleapis.com/"
+  // ],
+
+
+  "content_scripts":[
+    {
+      "matches": ["https://inbox.google.com/*"],
+      "css": ["styles.css"],
+      "js": ["script_injector.js"],
+      "run_at": "document_end"
+    }
+    ],
+
+
+  "web_accessible_resources": [
+    "*.js"
+    // "style/double-rainbow.css",
+    // "script/double-rainbow.js",
+    // "script/main.js",
+    // "templates/*"
   ]
+
 }
