@@ -1,9 +1,9 @@
 #avatar-wrap {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
   position: fixed;
-  left: 0;
-  bottom: 160px;
-  z-index: 300; }
+  right: 0;
+  bottom: 90px;
+  z-index: 3; }
   #avatar-wrap .avatar-img {
-    max-width: 200px; }
+    max-width: 120px; }
