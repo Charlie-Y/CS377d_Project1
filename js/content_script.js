@@ -96,7 +96,7 @@
 	var BODY_SELECTOR = ".cI";
 	var MARK_DONE_SELECTOR = ".itemIconDone";
 	var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
-	var SWEEP_SELECTOR= "button.dr";
+	var SWEEP_SELECTOR= "button.dr"; //[title='Sweep (mark unpinned items as done)']
 	var SWEEP_LIST_SELECTOR = ".DsPmj";
 	var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
@@ -126,6 +126,7 @@
 		level += val;
 		lastLevelIncrease = val;
 
+		// Here is where we pass it on
 		avatar.onLevelChange(val);
 
 		localStorage.setItem(STORAGE_STR, level);
@@ -167,6 +168,7 @@
 
 		// TODO: will also need to react to Confirm Sweepalls
 		// TODO: also react to Bundled sweepalls, like PROMO sweepalls
+		// TODO: there are quite a few sweepalls
 		$(BODY_SELECTOR).on('click', SWEEP_SELECTOR, function(event){
 
 			// figures out how many
