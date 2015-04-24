@@ -1,11 +1,15 @@
-body{
-	.foo{
-		color: red;
-	}
-	.bar{
-		color: blue;
-	}
-	.baz{
-		color:green;
+#avatar-wrap{
+	width: 200px;
+	height: 200px;
+
+	position:fixed;
+
+	left: 0;
+	bottom: 160px;
+	z-index: 300;
+
+
+	.avatar-img{
+		max-width: 200px;
 	}
 }

@@ -12,4 +12,7 @@ gulp.task('watch', function(){
 	gulp.watch('./styles/*.scss', ['sass']);
 });
 
+// have it just watch when just 'gulp' is put in the command line
+gulp.task('default', ['watch']);
+
 // TODO -- include browserify so that requiring jquery is easier

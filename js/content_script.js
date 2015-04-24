@@ -3,6 +3,86 @@
 
 (function (){
 
+	var extentionStr = "chrome-extension://ebdhakdfjbdppmnneefbggbdnmjinllp/";
+
+	function getRandomInt(min, max) {
+	    return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function Avatar(level){
+		this.level = level;
+		this.name = "pusheen";
+
+		this.animationTimeout = null;
+		this.mainImg = undefined;
+
+		// $ gifsicle -b pusheen_happy.gif --loopcount
+
+		this.normalSrc = extentionStr + "images/pusheen_normal.gif";
+
+		this.partyImgBaseStr = extentionStr + "images/pusheen_party";
+		this.numPartyImgs = 5;
+
+
+		this.render();
+
+	}
+
+	Avatar.prototype.render = function(){
+		var div = $("<div id='avatar-wrap'>");
+		var img = $("<img class='avatar-img' id='avatar-1'>");
+
+
+		img.attr('src', this.normalSrc);
+		img.attr('loop', true);
+
+		div.append(img);
+
+		$('body').append(div);
+
+		this.mainImg = img;
+	}
+
+
+	Avatar.prototype.onLevelChange = function(amount){
+		console.log("Level changed: " + amount);
+
+		if (amount > 0){
+
+			clearTimeout(this.animationTimeout);
+			
+			this.toHappy();
+
+			var _this = this;
+			this.animationTimeout = setTimeout(function(){
+				_this.toNormal();
+			}, getRandomInt(1300, 2000));
+
+		}
+	}
+
+	Avatar.prototype.toNormal = function(){
+		this.mainImg.attr("src", this.normalSrc);
+	}
+
+	Avatar.prototype.toHappy = function(){
+		this.mainImg.attr("src", this.getPartyImg());
+	}
+
+
+	Avatar.prototype.getPartyImg = function(){
+		
+		var num = getRandomInt(0, this.numPartyImgs - 1);
+
+		return this.partyImgBaseStr + num.toString() + ".gif";
+	}
+
+
+	var avatar = new Avatar(200);
+
+
+
+
 	// console.log("content_script.js start");
 
 	var STORAGE_STR = "storage";
@@ -39,6 +119,8 @@
 		var level = parseInt(localStorage.getItem(STORAGE_STR));
 		level += val;
 		lastLevelIncrease = val;
+
+		avatar.onLevelChange(val);
 
 		localStorage.setItem(STORAGE_STR, level);
 	}
@@ -134,6 +216,13 @@
 			checkEventsBinded();
 		}, 0);
 	});
+
+
+
+
+
+
+
 
 
 

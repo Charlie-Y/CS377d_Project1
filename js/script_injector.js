@@ -10,6 +10,19 @@ function createScript(scriptName, onloadFn){
 	(document.head||document.documentElement).appendChild(s);	
 }
 
+function createStylesheet(filename){
+	var style = document.createElement('link');
+	style.rel = 'stylesheet';
+	style.type = 'text/css';
+	style.href = chrome.extension.getURL(filename);
+	(document.head||document.documentElement).appendChild(style);
+}
+
+// Need a way to pass this to the content_script
+console.log(chrome.extension.getURL("images/pusheen_normal.gif"));
+
+// Add them here so i Don't have to reload the page everytime i change the css
+createStylesheet("styles/styles.css");
 
 createScript('js/jquery.js', function(){
 	createScript('js/content_script.js', function(){});	

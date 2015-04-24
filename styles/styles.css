@@ -1,6 +1,9 @@
-body .foo {
-  color: red; }
-body .bar {
-  color: blue; }
-body .baz {
-  color: green; }
+#avatar-wrap {
+  width: 200px;
+  height: 200px;
+  position: fixed;
+  left: 0;
+  bottom: 160px;
+  z-index: 300; }
+  #avatar-wrap .avatar-img {
+    max-width: 200px; }
