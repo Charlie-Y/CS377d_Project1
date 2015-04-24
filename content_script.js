@@ -30,14 +30,27 @@
 
 	function bindClickEvents(){
 		$(".scroll-list-item").click(function(event){
-			console.log("click");
+			
 
 			if ($(event.target).hasClass("itemIconDone")){
+
+				console.log("single todo clicked");
+
 				increaseLevel();
 				console.log("Level: " + getLevel());
 			}
 
 		})
+
+
+		$('button.dr').click(function(event){
+
+			console.log("sweep all clicked");
+
+			increaseLevel();
+			console.log("Level: " + getLevel());	
+		})
+
 	}
 
 	function checkEventsBinded(){
