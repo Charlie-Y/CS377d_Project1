@@ -3,7 +3,7 @@
 
 (function (){
 
-	console.log("content_script.js start");
+	// console.log("content_script.js start");
 
 	var STORAGE_STR = "storage";
 
@@ -28,15 +28,9 @@
 		localStorage.setItem(STORAGE_STR, level);
 	}
 
-
-	/// 
-	// console.log($(".scroll-list-item"));
-
-	$(document).ready( function(){
-		console.log("ready");
-
+	function bindClickEvents(){
 		$(".scroll-list-item").click(function(event){
-			console.log("BAR");
+			console.log("click");
 
 			if ($(event.target).hasClass("itemIconDone")){
 				increaseLevel();
@@ -44,24 +38,42 @@
 			}
 
 		})
+	}
 
-		// $(document).on("click", ".scroll-list-item", function(event){
-		// 	console.log("BAR2");
+	function checkEventsBinded(){
+		if ($._data($('.scroll-list-item').get(0), "events") == undefined){
+			console.log("bind failed");
+			return false;
+		} else {
+			console.log("bind successful");
+			return true;
+		}
+	}
 
-		// 	if ($(event.target).hasClass("itemIconDone")){
-		// 		increaseLevel();
-		// 		console.log("Level: " + getLevel());
-		// 	}
 
-		// })
 
-		$(document).click(function(){
-			console.log("FOOBAR");
-		})
-
+	// Here is where everything is bound
+	$(document).ready( function(){
+		var intervalId = setTimeout(function(){
+			bindClickEvents();
+			// console.log($._data($('.scroll-list-item').get(0), "events"));	
+			checkEventsBinded();
+		}, 0);
 	});
 
 
+
+	// This is here in case there is an execution error
 	console.log("content_script.js finish");
 
 })();
+
+
+
+
+
+
+
+
+
+
