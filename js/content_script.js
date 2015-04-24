@@ -22,7 +22,7 @@
 
 		this.partyImgBaseStr = extentionStr + "images/pusheen_party";
 		this.numPartyImgs = 5;
-
+		this.currentPartyImgNum = -1;
 
 		this.render();
 
@@ -73,6 +73,12 @@
 	Avatar.prototype.getPartyImg = function(){
 		
 		var num = getRandomInt(0, this.numPartyImgs - 1);
+
+		if (num == this.currentPartyImgNum){
+			num = (num + 1) % this.numPartyImgs;
+		}
+
+		this.currentPartyImgNum = num;
 
 		return this.partyImgBaseStr + num.toString() + ".gif";
 	}
