@@ -11,3 +11,5 @@ gulp.task('sass', function () {
 gulp.task('watch', function(){
 	gulp.watch('./styles/*.scss', ['sass']);
 });
+
+// TODO -- include browserify so that requiring jquery is easier
