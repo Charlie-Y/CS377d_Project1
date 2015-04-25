@@ -1,7 +1,8 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var compass = require('gulp-compass');
-
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 var path = require('path');
  
 gulp.task('sass', function () {
@@ -13,7 +14,7 @@ gulp.task('sass', function () {
 // TODO -- concat into one style folder
 gulp.task('watch', function(){
 	gulp.watch('./styles/*.scss', ['compass']);
-	// gulp.watch('./styles/*.scss', ['sass']);
+	gulp.watch('./js_src/*.js', ['browserify']);
 });
 
 
@@ -30,6 +31,15 @@ gulp.task('compass', function() {
             console.log("You messed up");
         })
     .pipe(gulp.dest('./styles'));
+});
+
+gulp.task('browserify', function() {
+    return browserify('./js_src/content_script.js')
+        .bundle()
+        //Pass desired output filename to vinyl-source-stream
+        .pipe(source('app.js'))
+        // Start piping stream to tasks!
+        .pipe(gulp.dest('./js/'));
 });
 
 // have it just watch when just 'gulp' is put in the command line
