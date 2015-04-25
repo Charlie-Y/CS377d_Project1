@@ -1,9 +1,21 @@
 
+/*
+
+possible animation software: publishes hard Gifs once registererd
+https://editor.animatron.com/#p=e6883a55f15251896bdaea78
+
+
+
+
+*/ 
 
 
 (function (){
 
-	var extentionStr = "chrome-extension://ebdhakdfjbdppmnneefbggbdnmjinllp/";
+	// TODO: get this from the content script
+
+	// var extentionStr = "chrome-extension://ebdhakdfjbdppmnneefbggbdnmjinllp/";
+	var extentionStr = $('#extension-holder').attr('data-extension-id');
 
 	function getRandomInt(min, max) {
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -21,7 +33,7 @@
 		this.normalSrc = extentionStr + "images/pusheen_normal.gif";
 
 		this.partyImgBaseStr = extentionStr + "images/pusheen_party";
-		this.numPartyImgs = 5;
+		this.numPartyImgs = 16;
 		this.currentPartyImgNum = -1;
 
 		this.render();

@@ -21,6 +21,19 @@ function createStylesheet(filename){
 // Need a way to pass this to the content_script
 console.log(chrome.extension.getURL("images/pusheen_normal.gif"));
 
+window.url123 = chrome.extension.getURL("images/pusheen_normal.gif");
+
+var thing = document.createElement('div');
+thing.id = "extension-holder";
+thing.setAttribute('data-extension-id', chrome.extension.getURL(''));
+
+var body = document.querySelector('body');
+body.appendChild(thing);
+
+
+
+console.log(thing);
+
 // Add them here so i Don't have to reload the page everytime i change the css
 createStylesheet("styles/styles.css");
 
