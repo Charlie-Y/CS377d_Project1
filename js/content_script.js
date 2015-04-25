@@ -15,6 +15,7 @@ https://editor.animatron.com/#p=e6883a55f15251896bdaea78
 	// TODO: get this from the content script
 
 	// var extentionStr = "chrome-extension://ebdhakdfjbdppmnneefbggbdnmjinllp/";
+	// Defined in script_injector.js
 	var extentionStr = $('#extension-holder').attr('data-extension-id');
 
 	function getRandomInt(min, max) {

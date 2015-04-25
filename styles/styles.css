@@ -1,8 +1,0 @@
-#avatar-wrap {
-  width: 200px;
-  position: fixed;
-  right: 30px;
-  bottom: 90px;
-  z-index: 3; }
-  #avatar-wrap .avatar-img {
-    max-width: 200px; }

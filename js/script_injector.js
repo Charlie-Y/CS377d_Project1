@@ -19,23 +19,22 @@ function createStylesheet(filename){
 }
 
 // Need a way to pass this to the content_script
-console.log(chrome.extension.getURL("images/pusheen_normal.gif"));
+// console.log(chrome.extension.getURL("images/pusheen_normal.gif"));
+// window.url123 = chrome.extension.getURL("images/pusheen_normal.gif");
+function passExtensionURL(){
+	var thing = document.createElement('div');
+	thing.id = "extension-holder";
+	thing.setAttribute('data-extension-id', chrome.extension.getURL(''));
 
-window.url123 = chrome.extension.getURL("images/pusheen_normal.gif");
+	var body = document.querySelector('body');
+	body.appendChild(thing);	
+}
 
-var thing = document.createElement('div');
-thing.id = "extension-holder";
-thing.setAttribute('data-extension-id', chrome.extension.getURL(''));
-
-var body = document.querySelector('body');
-body.appendChild(thing);
-
-
-
-console.log(thing);
 
 // Add them here so i Don't have to reload the page everytime i change the css
-createStylesheet("styles/styles.css");
+
+passExtensionURL();
+createStylesheet("styles/app.css");
 
 createScript('js/jquery.js', function(){
 	createScript('js/content_script.js', function(){});	

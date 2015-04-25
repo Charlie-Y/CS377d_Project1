@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Charlie-Y/CS377d_Project1",
   "devDependencies": {
     "gulp": "^3.8.11",
+    "gulp-compass": "^2.0.4",
     "gulp-concat": "^2.5.2",
     "gulp-sass": "^1.3.3"
   }
