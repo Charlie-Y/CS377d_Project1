@@ -20,8 +20,8 @@
     {
       "matches": ["https://inbox.google.com/*"],
       "css": ["styles/animate.css", "styles/app.css"],
-      // "js": ["js/script_injector.js"],
-      "js": ["js/app.js"],
+      "js": ["js/script_injector.js"],
+      // "js": ["js/app.js"],
       "run_at": "document_end"
     }
   ],

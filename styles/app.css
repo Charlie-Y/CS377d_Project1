@@ -30,10 +30,11 @@
 }
 #avatar-wrap .button {
   -webkit-appearance: none;
+  border-style: none;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  padding: 5px;
+  padding: 5px 10px;
   background: #000080;
   color: white;
 }

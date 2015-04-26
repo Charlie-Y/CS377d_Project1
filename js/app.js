@@ -7186,6 +7186,7 @@ InboxTracker.prototype.checkEventsBinded = function(){
 module.exports = InboxTracker;
 
 },{"./util.js":6,"jquery":7}],6:[function(require,module,exports){
+var $ = require('jquery');
 var Util = {};
 module.exports = Util;
 
@@ -7193,10 +7194,14 @@ Util.getRandomInt = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-Util.extentionStr = chrome.extension.getURL('');
+// If injecting
+Util.extentionStr = $('#extension-holder').attr('data-extension-id');
+
+//if not injeting
+// Util.extentionStr = chrome.extension.getURL('');
 
 Util.animEndStr = 'webkitAnimationEnd';
-},{}],7:[function(require,module,exports){
+},{"jquery":7}],7:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
