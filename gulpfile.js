@@ -33,7 +33,12 @@ gulp.task('compass', function() {
     .pipe(gulp.dest('./styles'));
 });
 
+
+// This task compiles everything in content_script into app.js
+// content_script should be the access point
 gulp.task('browserify', function() {
+    // console.log("FOOO");
+
     return browserify('./js_src/content_script.js')
         .bundle()
         //Pass desired output filename to vinyl-source-stream
@@ -44,5 +49,3 @@ gulp.task('browserify', function() {
 
 // have it just watch when just 'gulp' is put in the command line
 gulp.task('default', ['watch']);
-
-// TODO -- include browserify so that requiring jquery is easier

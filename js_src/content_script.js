@@ -1,10 +1,6 @@
 
 /*
 
-possible animation software: publishes hard Gifs once registererd
-https://editor.animatron.com/#p=e6883a55f15251896bdaea78
-
-
 Tracks something everytime you got a dance
 
 Need to show a new Level!
@@ -37,6 +33,8 @@ Some kind of progress bar on a mouseover
 */ 
 
 var $ = require('jquery');
+var Util = require('./util.js');
+var Avatar = require('./avatar.js');
 
 (function (){
 
@@ -45,85 +43,7 @@ var $ = require('jquery');
 	// var extentionStr = "chrome-extension://ebdhakdfjbdppmnneefbggbdnmjinllp/";
 	// Defined in script_injector.js
 	// var extentionStr = $('#extension-holder').attr('data-extension-id');
-	var extentionStr = chrome.extension.getURL('');
 
-	function getRandomInt(min, max) {
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-
-	function Avatar(level){
-		this.level = level;
-		this.name = "pusheen";
-
-		this.animationTimeout = null;
-		this.mainImg = undefined;
-
-		// $ gifsicle -b pusheen_happy.gif --loopcount
-
-		this.normalSrc = extentionStr + "images/pusheen_normal.gif";
-
-		this.partyImgBaseStr = extentionStr + "images/pusheen_party";
-		this.numPartyImgs = 16;
-		this.currentPartyImgNum = -1;
-
-		this.render();
-
-	}
-
-	Avatar.prototype.render = function(){
-		var div = $("<div id='avatar-wrap'>");
-		var img = $("<img class='avatar-img' id='avatar-1'>");
-
-
-		img.attr('src', this.normalSrc);
-		img.attr('loop', true);
-
-		div.append(img);
-
-		$('body').append(div);
-
-		this.mainImg = img;
-	}
-
-
-	Avatar.prototype.onLevelChange = function(amount){
-		console.log("Level changed: " + amount);
-
-		if (amount > 0){
-
-			clearTimeout(this.animationTimeout);
-			
-			this.toHappy();
-
-			var _this = this;
-			this.animationTimeout = setTimeout(function(){
-				_this.toNormal();
-			}, getRandomInt(1300, 2000));
-
-		}
-	}
-
-	Avatar.prototype.toNormal = function(){
-		this.mainImg.attr("src", this.normalSrc);
-	}
-
-	Avatar.prototype.toHappy = function(){
-		this.mainImg.attr("src", this.getPartyImg());
-	}
-
-
-	Avatar.prototype.getPartyImg = function(){
-		
-		var num = getRandomInt(0, this.numPartyImgs - 1);
-
-		if (num == this.currentPartyImgNum){
-			num = (num + 1) % this.numPartyImgs;
-		}
-
-		this.currentPartyImgNum = num;
-
-		return this.partyImgBaseStr + num.toString() + ".gif";
-	}
 
 
 	var avatar = new Avatar(200);
