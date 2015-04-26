@@ -1,3 +1,6 @@
+var $ = require('jquery'); 
+var Util = require('./util.js');
+
 /*
 
 inbox_tracker.js
@@ -26,7 +29,7 @@ var lastLevelIncrease = 0;
 
 
 // Constructor 
-function InboxTracker = function(avatar){
+function InboxTracker (avatar){
 	this.avatar = avatar;
 
 	this.init();
@@ -35,11 +38,13 @@ function InboxTracker = function(avatar){
 
 InboxTracker.prototype.init = function(){
 	// Here is where everything is bound
+	var _this = this;
+
 	$(document).ready( function(){
 		var intervalId = setTimeout(function(){
-			bindClickEvents();
+			_this.bindClickEvents();
 			// console.log($._data($('.scroll-list-item').get(0), "events"));	
-			checkEventsBinded();
+			_this.checkEventsBinded();
 		}, 0);
 	});
 
@@ -47,13 +52,15 @@ InboxTracker.prototype.init = function(){
 
 
 
-Inbox.prototype.bindClickEvents = function(){
+InboxTracker.prototype.bindClickEvents = function(){
+	var _this = this;
+
 	$(BODY_SELECTOR).on('click', MARK_DONE_SELECTOR, function(event){
 		console.log("mark done clicked");
 		// increaseLevel(1);
 		// alertLevel();
-		this.avatar.increaseLevel(1);
-		this.avatar.alertLevel();	
+		_this.avatar.increaseLevel(1);
+		_this.avatar.alertLevel();	
 	})
 
 	// TODO: will also need to react to Confirm Sweepalls
@@ -70,8 +77,8 @@ Inbox.prototype.bindClickEvents = function(){
 		// there needs to be some way to figure out how many are swept away
 		// probably set up some kind of delay before checking...
 		console.log("sweep all clicked, " + items.size() + " items cleared");
-		this.avatar.increaseLevel(items.size());
-		this.avatar.alertLevel();
+		_this.avatar.increaseLevel(items.size());
+		_this.avatar.alertLevel();
 	})
 
 
@@ -79,20 +86,20 @@ Inbox.prototype.bindClickEvents = function(){
 		console.log("mark undone clicked");
 
 		// undoLevelChange();
-		this.avatar.decreaseLevel(1);
-		this.avatar.alertLevel();
+		_this.avatar.decreaseLevel(1);
+		_this.avatar.alertLevel();
 	})
 
 	$(UNDO_PARENT_SELECTOR).on('click', UNDO_SELECTOR, function(event){
 		console.log("undo clicked");
 
-		this.avatar.undoLevelChange();
-		this.avatar.alertLevel();
+		_this.avatar.undoLevelChange();
+		_this.avatar.alertLevel();
 	})
 
 }
 
-Inbox.prototype.checkEventsBinded = function(){
+InboxTracker.prototype.checkEventsBinded = function(){
 	if ($._data($('.cI').get(0), "events") == undefined){
 	// if ($._data($('.scroll-list-item').get(0), "events") == undefined){
 		console.log("bind failed");
@@ -103,4 +110,4 @@ Inbox.prototype.checkEventsBinded = function(){
 	}
 }
 
-
+module.exports = InboxTracker;

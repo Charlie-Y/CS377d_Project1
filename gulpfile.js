@@ -39,12 +39,17 @@ gulp.task('compass', function() {
 gulp.task('browserify', function() {
     // console.log("FOOO");
 
-    return browserify('./js_src/content_script.js')
-        .bundle()
+    var b = browserify();
+    b.add('./js_src/content_script.js');
+
+    return b.bundle()
+        .on('error', function(err) { 
+            console.log(err); 
+            this.emit('end');
+        })
         //Pass desired output filename to vinyl-source-stream
         .pipe(source('app.js'))
-        // Start piping stream to tasks!
-        .pipe(gulp.dest('./js/'));
+        .pipe(gulp.dest('./js'));
 });
 
 // have it just watch when just 'gulp' is put in the command line

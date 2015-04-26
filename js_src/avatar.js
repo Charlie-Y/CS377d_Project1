@@ -17,6 +17,8 @@ the inbox tracker.
 
 */
 
+var STORAGE_STR = "storage";
+
 
 
 function Avatar(level){
@@ -35,6 +37,8 @@ function Avatar(level){
 	this.currentPartyImgNum = -1;
 
 	this.render();
+
+
 
 }
 
