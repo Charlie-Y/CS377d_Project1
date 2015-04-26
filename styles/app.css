@@ -11,3 +11,29 @@
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+#avatar-wrap .level-up-message {
+  font-size: 40px;
+  font-weight: bold;
+  color: #5ED311;
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: -5px;
+  text-align: center;
+  display: block;
+}
+#avatar-wrap .test-buttons {
+  position: absolute;
+  right: 90px;
+  bottom: -30px;
+}
+#avatar-wrap .button {
+  -webkit-appearance: none;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px;
+  background: #000080;
+  color: white;
+}

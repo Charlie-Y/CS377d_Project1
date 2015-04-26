@@ -69,22 +69,10 @@ var Avatar = can.Map.extend({}, {
 		this.level++;
 	},
 
-	// Move this stuff to the avatar_control
+	// Moved this stuff to the avatar_control
 	onLevelChange: function(amount){
-		console.log("Level changed: " + amount);
-
-		if (amount > 0){
-
-			clearTimeout(this.animationTimeout);
-			
-			this.toHappy();
-
-			var _this = this;
-			this.animationTimeout = setTimeout(function(){
-				_this.toNormal();
-			}, Util.getRandomInt(1300, 2000));
-
-		}
+		// This should track internal changes.
+		// the control is in charge of view changes
 	},
 
 	toNormal: function(){

@@ -18,16 +18,37 @@
 		max-width: 200px;
 		@include border-radius(50%);
 	}
+
+	.level-up-message{
+		font-size: 40px;
+		font-weight: bold;
+
+		color: #5ED311;
+
+		position: absolute;
+
+		z-index: 4;
+		left:0;
+		right:0;
+		top:-5px; 
+
+		// width: 100px;
+		text-align: center;
+		display: block;
+		
+	}
+
+	.test-buttons{
+		position: absolute;
+		right: 90px;
+		bottom: -30px;
+	}
+
+	.button{
+		-webkit-appearance: none;
+		@include border-radius(5px);
+		padding: 5px;
+		background: #000080;
+		color: white;
+	}
 }
-
-// button.dr.et{
-// 	z-index: 20 !important;
-// }
-
-// .section-header{
-// 	z-index: 4;
-// }
-
-// .af-b4-bK{
-// 	z-index:1;
-// }

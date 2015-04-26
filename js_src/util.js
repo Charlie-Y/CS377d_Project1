@@ -6,3 +6,5 @@ Util.getRandomInt = function(min, max) {
 }
 
 Util.extentionStr = chrome.extension.getURL('');
+
+Util.animEndStr = 'webkitAnimationEnd';
