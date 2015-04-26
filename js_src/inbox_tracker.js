@@ -13,7 +13,6 @@ and passing them to the
 
 
 
-var STORAGE_STR = "storage";
 
 var BODY_SELECTOR = ".cI";
 var MARK_DONE_SELECTOR = ".itemIconDone";

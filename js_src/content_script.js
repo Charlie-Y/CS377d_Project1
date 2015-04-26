@@ -47,7 +47,7 @@ var InboxTracker = require('./inbox_tracker.js');
 
 
 
-	var avatar = new Avatar(200);
+	var avatar = new Avatar();
 
 	var inboxTracker = new InboxTracker(avatar);
 

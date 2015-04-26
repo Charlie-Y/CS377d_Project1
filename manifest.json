@@ -30,11 +30,8 @@
   "web_accessible_resources": [
     "js/*.js",
     "images/*.gif",
-    "styles/*.css"
-    // "style/double-rainbow.css",
-    // "script/double-rainbow.js",
-    // "script/main.js",
-    // "templates/*"
+    "styles/*.css",
+    "mustache/*.mustache"
   ]
 
 }

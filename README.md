@@ -35,3 +35,7 @@ This will setup Gulp to watch any changes for files in '/js_src' and rebundle ap
 Every time you change the codebase, make sure to reload the extension. You can do this by reloading the chrome://extensions page or downloading the Chrome App & Extension Developer tool and reloading with that. I recommend the latter.
 
 
+## General architecture
+
+This project uses content scripts with apply click event listeners to Inbox elements using jQuery.
+It responds with a wonderful little HTML inlay brought to life with live-binding by CanJS which uses jquery and loads mustache templates
