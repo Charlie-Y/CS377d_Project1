@@ -2,9 +2,9 @@
 	
 
 <img class="{{imgClass}}" id="avatar-1" src="{{avatar.currentSrc}}">
-{{avatar.level}}	
 
-<div class="test-buttons">
+<div class="test-buttons {{^isDev}} hide {{/isDev}}">
+{{avatar.level}}	
 	
 	<button class="button level-up-button">Level Up Test</button>
 

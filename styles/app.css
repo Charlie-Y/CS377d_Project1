@@ -5,6 +5,9 @@
   bottom: 90px;
   z-index: 3;
 }
+#avatar-wrap .hide {
+  display: none !important;
+}
 #avatar-wrap .avatar-img {
   max-width: 200px;
   -moz-border-radius: 50%;

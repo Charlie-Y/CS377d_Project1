@@ -6,7 +6,8 @@ var Util = require('./util.js');
 
 var AvatarControl = can.Control.extend({
 	defaults: {
-		imgClass: 'avatar-img'
+		imgClass: 'avatar-img',
+		isDev: true
 	}
 },{
 	init: function(el, options){
