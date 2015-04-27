@@ -285,6 +285,7 @@ var AvatarControl = can.Control.extend({
 	},
 
 
+
 	// pops up a little animation...
 	showLevelUp: function(amount){
 
@@ -294,26 +295,78 @@ var AvatarControl = can.Control.extend({
 
 			setTimeout(function(){
 				// this.options.attr('levelUpVal', avatar.level);
-				var levelUpMessage = $("<div class='level-up-message animated fadeOutUp'>");
-				levelUpMessage.text('+' + 1);
-
-				// randomly perturb the +1s
-				levelUpMessage.css('width', Util.getRandomInt(80, 120) + "%");
-				levelUpMessage.css('top', Util.getRandomInt(-10, 0) + "px");
-
-				$(_this.element).append(levelUpMessage);
-
-				levelUpMessage.one(Util.animEndStr, function(){
-					levelUpMessage.remove();
-				})
+				_this.showPopupMessage({
+					txt: "+1",
+					// color: 
+					randomLocation: true
+				});
 			}, 70 * i);
 		}
 
+	},
+
+	/*
+	
+	Popups up a little message thingy
+
+	options is an object with a few defaults 
+	options = {
+		txt: the string, default none
+		color: the color of the thing, default green
+		randomLocation: to randomly perturb or not, default nope
+		duration: ... this one is a bit harder to, default 1s
+	}
+
+	*/
+	showPopupMessage: function(options){
+		if (options == undefined){
+			console.error('showPopupMessage needs an argument passed in');
+			return;
+		}
+
+		var message = $("<div class='level-up-message animated fadeOutUp'>");
+
+		message.text( options.txt);
+
+		// expected to short circtui on failures
+		if (options.randomLocation != undefined && options.randomLocation){
+			// randomly perturb the +1s
+			message.css('width', Util.getRandomInt(80, 120) + "%");
+			message.css('top', Util.getRandomInt(-10, 0) + "px");
+		}
+
+		if (options.color != undefined ){
+			message.css('color', options.color)
+		}
+
+
+		if (options.duration != undefined){
+			message.css('-webkit-animation-duration', options.duration)
+		}
+
+		$(this.element).append(message);
+
+		message.one(Util.animEndStr, function(){
+			message.remove();
+		})
 	}
 
 });
 
 module.exports = AvatarControl;
+
+
+
+
+
+
+
+
+
+
+
+
+
 },{"./can.jquery.js":4,"./util.js":6,"jquery":7}],4:[function(require,module,exports){
 (function (global){
 /*!
