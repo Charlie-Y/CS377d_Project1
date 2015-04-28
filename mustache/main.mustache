@@ -8,7 +8,11 @@
 	<button class="button {{hideActionButtonClass}} hide"> X </button>
 	<button class="button {{foodButtonClass}} hide"> FEED </button>
 	<button class="button {{playButtonClass}} hide"> PLAY </button>
-	<button class="button {{anyButtonClass}} hide"> ? </button>
+
+	{{#isDev}}
+		<button class="button {{anyButtonClass}} hide no"> ooo </button>
+	{{/isDev}}
+
 </div>
 
 

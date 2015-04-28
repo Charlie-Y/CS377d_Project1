@@ -75,10 +75,18 @@ var Avatar = can.Map.extend({}, {
 		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
 		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
+		this.numPartyImgs = 9;
+
+		// this.allStrs = []
+		// for(var i = 0; i < this.numPartyImgs; i++ ) {
+		// 	this.allStrs.push("")
+		// }
+		// this.allStrs.concat(foodStrs)
+		// this.allStrs.concat(playStrs)
+
 		this.attr('currentSrc', this.normalSrc);
 		this.attr('isBusy', false);
 
-		this.numPartyImgs = 9;
 		this.currentPartyImgNum = -1;
 
 		this.animationTimeout = -1;
@@ -139,6 +147,17 @@ var Avatar = can.Map.extend({}, {
 		this.attr('isBusy', true);
 	},
 
+	toAny: function(){
+		var rand = Util.getRandomInt(0,100);
+		if (rand < 33){
+			this.toPlaying();
+		} else if (rand < 66){
+			this.toEating();
+		} else if (rand <= 100){
+			this.toExcited();
+		}
+	},
+
 	toExcited: function(){
 		this.attr("currentSrc", this.getExcitedImg());
 		this.attr('isBusy', true);
@@ -185,6 +204,8 @@ var Avatar = can.Map.extend({}, {
 			case 'excited':
 				this.toExcited();
 				break;
+			case 'any':
+				this.toAny();
 			default:
 				return;
 		}

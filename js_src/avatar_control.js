@@ -11,7 +11,7 @@ var AvatarControl = can.Control.extend({
 		foodButtonClass: "food",
 		playButtonClass: "play",
 		anyButtonClass: "any",
-		isDev: true
+		isDev: false
 	}
 },{
 	init: function(el, options){
@@ -78,7 +78,7 @@ var AvatarControl = can.Control.extend({
 	".{anyButtonClass} click": function(el, evl){
 		this.avatar.playAnimation({
 				type: 'any',
-				duration: 1500	
+				duration: 2500	
 			})
 	},
 
