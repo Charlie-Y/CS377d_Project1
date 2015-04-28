@@ -87,6 +87,32 @@ The avatar is responsible for tracking the things, rendering the things, and res
 the inbox tracker.
 
 
+
+
+Lets figure out how this whole thing will work 
+
+-Every time you mark done you get +1 XP
+-7 XP will let you level up
+
+
+on level up you gain a new "play" or a new "food"
+
+types of reactions: 
+
+normal
+food
+dance/play
+
+excited - on mouseover
+
+stories - 3 part things
+
+
+-- interaction
+when you click on the buddy, the menu icons appear
+showing food/play/? buttons
+
+
 */
 
 var STORAGE_STR = "storage";
@@ -101,12 +127,19 @@ var Avatar = can.Map.extend({}, {
 		this.animationTimeout = null;
 		this.mainImg = undefined;
 
+		// Resets an edited gif to have infinite loop
 		// $ gifsicle -b pusheen_happy.gif --loopcount
+
+		// resizes a 350x300 to 300x300 gif
+		// $ gifsicle --crop 25,0-325,300 --output pusheen_excited3.gif pusheen_excited2.gif
+
 
 		this.normalSrc = Util.extentionStr + "images/pusheen_normal.gif";
 		this.partyImgBaseStr = Util.extentionStr + "images/pusheen_party";
+		this.excitedSrc = Util.extentionStr + "images/pusheen_excited.gif";
 
 		this.attr('currentSrc', this.normalSrc);
+		this.attr('isBusy', false);
 
 		this.numPartyImgs = 16;
 		this.currentPartyImgNum = -1;
@@ -148,10 +181,19 @@ var Avatar = can.Map.extend({}, {
 
 	toNormal: function(){
 		this.attr("currentSrc", this.normalSrc);
+		this.attr('isBusy', false);
 	},	
 
 	toHappy: function(){
+		this.attr('isBusy', true);
 		this.attr("currentSrc", this.getPartyImg());
+	},
+
+	toExcited: function(){
+		if (this.attr('currentSrc') != this.excitedSrc){
+			this.attr("currentSrc", this.excitedSrc);
+			this.attr('isBusy', false);
+		}
 	},
 
 	getPartyImg: function(){
@@ -163,6 +205,7 @@ var Avatar = can.Map.extend({}, {
 		}
 
 		this.currentPartyImgNum = num;
+		// return this.partyImgBaseStr + "8.gif";
 		return this.partyImgBaseStr + num.toString() + ".gif";
 	},
 
@@ -253,38 +296,56 @@ var AvatarControl = can.Control.extend({
 	// },
 
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
-		// console.log("Level changed from " + oldVal + " to " + newVal);
+		console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
 
 		if (amount > 0){
-			clearTimeout(this.animationTimeout);
-			
-			avatar.toHappy();
 
-			var _this = avatar;
-			this.animationTimeout = setTimeout(function(){
-				_this.toNormal();
-			}, Util.getRandomInt(1300, 2000));
-
+			this.showHappy();
 			this.showLevelUp(amount);
 		}
 
 	},
+
+
 
 	".level-up-button click": function(el, ev){
 
 		this.showLevelUp(4);
 	},
 
-	"{imgClass} click": function(el, ev ){
-
+	".{imgClass} click": function(el, ev ){
+		// console.log('click');	
+		// if (!this.avatar.isBusy){
+		// 	this.showHappy();
+		// }
 	},
 
-	"{imgClass} mouseover": function(el, ev){
+	".{imgClass} mousemove": function(el, ev){
+		// console.log('mousemove');
+		// if (!this.avatar.isBusy){
+		// 	this.avatar.toExcited();
+		// }
+	},
 
+	".{imgClass} mouseleave": function(el, ev){
+		// console.log('mouseleave');
+		// if (!this.avatar.isBusy){
+		// 	this.avatar.toNormal();
+		// }
 	},
 
 
+	showHappy: function(){
+		clearTimeout(this.animationTimeout);
+			
+		this.avatar.toHappy();
+
+		var _this = this.avatar;
+		this.animationTimeout = setTimeout(function(){
+			_this.toNormal();
+		}, Util.getRandomInt(1300, 2000));
+	},
 
 	// pops up a little animation...
 	showLevelUp: function(amount){
@@ -7140,13 +7201,13 @@ and passing them to the
 */
 
 
+// THESE ARE CHANGING... UH OH
 
-
-var BODY_SELECTOR = ".cI";
+var BODY_SELECTOR = ".c1"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
-var SWEEP_SELECTOR= "button.dr"; //[title='Sweep (mark unpinned items as done)']
-var SWEEP_LIST_SELECTOR = ".DsPmj";
+var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
+var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
 var UNDO_SELECTOR = "span.fD";
@@ -7157,6 +7218,7 @@ var lastLevelIncrease = 0;
 
 // Constructor 
 function InboxTracker (avatar){
+
 	this.avatar = avatar;
 
 	this.init();
@@ -7224,10 +7286,13 @@ InboxTracker.prototype.bindClickEvents = function(){
 		_this.avatar.alertLevel();
 	})
 
+	// console.log('bindClickEvents done');
+
 }
 
 InboxTracker.prototype.checkEventsBinded = function(){
-	if ($._data($('.cI').get(0), "events") == undefined){
+	console.log("checkEventsBinded start");
+	if ($._data($(BODY_SELECTOR).get(0), "events") == undefined){
 	// if ($._data($('.scroll-list-item').get(0), "events") == undefined){
 		console.log("bind failed");
 		return false;
@@ -7235,6 +7300,7 @@ InboxTracker.prototype.checkEventsBinded = function(){
 		console.log("bind successful");
 		return true;
 	}
+	console.log("checkEventsBinded done");
 }
 
 module.exports = InboxTracker;

@@ -12,13 +12,13 @@ and passing them to the
 */
 
 
+// THESE ARE CHANGING... UH OH
 
-
-var BODY_SELECTOR = ".cI";
+var BODY_SELECTOR = ".c1"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
-var SWEEP_SELECTOR= "button.dr"; //[title='Sweep (mark unpinned items as done)']
-var SWEEP_LIST_SELECTOR = ".DsPmj";
+var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
+var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
 var UNDO_SELECTOR = "span.fD";
@@ -29,6 +29,7 @@ var lastLevelIncrease = 0;
 
 // Constructor 
 function InboxTracker (avatar){
+
 	this.avatar = avatar;
 
 	this.init();
@@ -96,10 +97,13 @@ InboxTracker.prototype.bindClickEvents = function(){
 		_this.avatar.alertLevel();
 	})
 
+	// console.log('bindClickEvents done');
+
 }
 
 InboxTracker.prototype.checkEventsBinded = function(){
-	if ($._data($('.cI').get(0), "events") == undefined){
+	console.log("checkEventsBinded start");
+	if ($._data($(BODY_SELECTOR).get(0), "events") == undefined){
 	// if ($._data($('.scroll-list-item').get(0), "events") == undefined){
 		console.log("bind failed");
 		return false;
@@ -107,6 +111,7 @@ InboxTracker.prototype.checkEventsBinded = function(){
 		console.log("bind successful");
 		return true;
 	}
+	console.log("checkEventsBinded done");
 }
 
 module.exports = InboxTracker;

@@ -20,38 +20,56 @@ var AvatarControl = can.Control.extend({
 	// },
 
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
-		// console.log("Level changed from " + oldVal + " to " + newVal);
+		console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
 
 		if (amount > 0){
-			clearTimeout(this.animationTimeout);
-			
-			avatar.toHappy();
 
-			var _this = avatar;
-			this.animationTimeout = setTimeout(function(){
-				_this.toNormal();
-			}, Util.getRandomInt(1300, 2000));
-
+			this.showHappy();
 			this.showLevelUp(amount);
 		}
 
 	},
+
+
 
 	".level-up-button click": function(el, ev){
 
 		this.showLevelUp(4);
 	},
 
-	"{imgClass} click": function(el, ev ){
-
+	".{imgClass} click": function(el, ev ){
+		// console.log('click');	
+		// if (!this.avatar.isBusy){
+		// 	this.showHappy();
+		// }
 	},
 
-	"{imgClass} mouseover": function(el, ev){
+	".{imgClass} mousemove": function(el, ev){
+		// console.log('mousemove');
+		// if (!this.avatar.isBusy){
+		// 	this.avatar.toExcited();
+		// }
+	},
 
+	".{imgClass} mouseleave": function(el, ev){
+		// console.log('mouseleave');
+		// if (!this.avatar.isBusy){
+		// 	this.avatar.toNormal();
+		// }
 	},
 
 
+	showHappy: function(){
+		clearTimeout(this.animationTimeout);
+			
+		this.avatar.toHappy();
+
+		var _this = this.avatar;
+		this.animationTimeout = setTimeout(function(){
+			_this.toNormal();
+		}, Util.getRandomInt(1300, 2000));
+	},
 
 	// pops up a little animation...
 	showLevelUp: function(amount){

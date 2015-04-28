@@ -1,5 +1,16 @@
+@font-face {
+  font-family: pusheenFont;
+  src: url(./pusheenFont.ttf);
+}
 #avatar-wrap {
-  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  height: 200px;
+  min-height: 200px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background: #fcf0e4;
   position: fixed;
   right: 30px;
   bottom: 90px;
@@ -9,10 +20,15 @@
   display: none !important;
 }
 #avatar-wrap .avatar-img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
   max-width: 200px;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
+  cursor: pointer;
 }
 #avatar-wrap .level-up-message {
   font-size: 40px;
@@ -26,18 +42,83 @@
   text-align: center;
   display: block;
 }
+#avatar-wrap .action-buttons {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 2;
+}
+#avatar-wrap .action-buttons .button {
+  position: relative;
+  padding: 10px;
+  height: 80px;
+  width: 80px;
+  font-family: pusheenFont;
+  font-size: 17px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  text-align: center;
+  display: block;
+  margin-bottom: 10px;
+  background: #fcf0e4;
+  color: #66482e;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+#avatar-wrap .action-buttons .button:hover {
+  font-size: 23px;
+}
+#avatar-wrap .action-buttons .button:active {
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  font-size: 21px;
+  background: #f7d6b6;
+}
+#avatar-wrap .action-buttons .button.close {
+  position: absolute;
+  top: -40px;
+  left: 25px;
+  font-size: 17px;
+  height: 60px;
+  width: 60px;
+  -moz-transition: none;
+  -o-transition: none;
+  -webkit-transition: none;
+  transition: none;
+}
+#avatar-wrap .action-buttons .button.food {
+  left: -60px;
+}
+#avatar-wrap .action-buttons .button.play {
+  left: -90px;
+}
+#avatar-wrap .action-buttons .button.any {
+  left: -72px;
+}
 #avatar-wrap .test-buttons {
   position: absolute;
-  right: 90px;
-  bottom: -30px;
+  right: 60px;
+  bottom: -50px;
 }
-#avatar-wrap .button {
-  -webkit-appearance: none;
-  border-style: none;
+#avatar-wrap .test-buttons .button {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
   padding: 5px 10px;
   background: #000080;
   color: white;
+}
+#avatar-wrap .button {
+  -webkit-appearance: none;
+  border-style: none;
+  cursor: pointer;
+  outline: none;
+}
+#avatar-wrap .button:focus {
+  outline: none;
 }

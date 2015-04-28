@@ -19,7 +19,7 @@
   "content_scripts":[
     {
       "matches": ["https://inbox.google.com/*"],
-      "css": ["styles/animate.css", "styles/app.css"],
+      "css": ["styles/animate.css"],
       "js": ["js/script_injector.js"],
       // "js": ["js/app.js"],
       "run_at": "document_end"
@@ -31,6 +31,7 @@
     "js/*.js",
     "images/*.gif",
     "styles/*.css",
+    "styles/*.ttf",
     "mustache/*.mustache"
   ]
 

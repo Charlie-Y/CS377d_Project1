@@ -1,8 +1,23 @@
 @import "compass/css3/border-radius";
+@import "compass/css3/transition";
+
+$pusheen-background: #fcf0e4;
+
+@font-face{
+	font-family: pusheenFont;
+	src: url(./pusheenFont.ttf);
+}
 
 #avatar-wrap{
-	width: 200px;
-	// height: 120px;
+	min-width: 200px;
+	max-width: 200px;
+
+	height: 200px;
+	min-height: 200px;
+
+	@include border-radius(50%);
+	background: $pusheen-background;
+	
 
 	position:fixed;
 
@@ -14,13 +29,22 @@
 	z-index: 3;
 
 
+
 	.hide{
 		display: none !important;
 	}
 
 	.avatar-img{
+		position:absolute;
+		top:0;
+		bottom:0;
+		margin:auto;
 		max-width: 200px;
 		@include border-radius(50%);
+
+		cursor: pointer;
+
+
 	}
 
 	.level-up-message{
@@ -42,19 +66,96 @@
 		
 	}
 
-	.test-buttons{
+	.action-buttons{
 		position: absolute;
-		right: 90px;
-		bottom: -30px;
+		top:-40px;
+		left: 0;
+		z-index: 2;
+
+		.button{
+			position:relative;
+
+			$dim: 80px;
+			padding: 10px;
+			height: $dim;
+			width: $dim; 
+
+			font-family: pusheenFont;
+			font-size: 17px;
+			@include border-radius(50%);
+			text-align: center;
+			display: block;
+			margin-bottom: 10px;
+
+			background: $pusheen-background;
+			color: #66482e;
+			// position: absolute;
+
+
+			@include transition(all .2s ease-in);
+
+			&:hover{
+				font-size: 23px;
+			}
+
+			&:active{
+				@include transition-duration(.1s);
+
+				font-size: 21px;	
+				background: darken($pusheen-background, 10%);
+			}
+		}
+
+		// need to position these so they look like they are in a circle
+		.button.close{
+			position: absolute;
+			top: -40px;
+			left: 25px;
+
+			$dim: 60px;
+
+			font-size: 17px;
+
+			height: $dim;
+			width: $dim; 
+
+			@include transition(none);
+
+		}
+
+		.button.food{
+			left: -60px;
+		}
+
+		.button.play{
+			left: -90px;
+		}
+
+		.button.any{
+			left: -72px;
+		}
 	}
 
+	.test-buttons{
+		position: absolute;
+		right: 60px;
+		bottom: -50px;
+		.button{
+			@include border-radius(5px);
+			padding: 5px 10px;
+			background: #000080;
+			color: white;
+		}
+	}
+
+	// just removes the button style
 	.button{
 		-webkit-appearance: none;
 		border-style:none;
-		
-		@include border-radius(5px);
-		padding: 5px 10px;
-		background: #000080;
-		color: white;
+		cursor: pointer;
+		outline:none;
+		&:focus{
+			outline: none;
+		}
 	}
 }

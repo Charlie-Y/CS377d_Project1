@@ -16,6 +16,32 @@ The avatar is responsible for tracking the things, rendering the things, and res
 the inbox tracker.
 
 
+
+
+Lets figure out how this whole thing will work 
+
+-Every time you mark done you get +1 XP
+-7 XP will let you level up
+
+
+on level up you gain a new "play" or a new "food"
+
+types of reactions: 
+
+normal
+food
+dance/play
+
+excited - on mouseover
+
+stories - 3 part things
+
+
+-- interaction
+when you click on the buddy, the menu icons appear
+showing food/play/? buttons
+
+
 */
 
 var STORAGE_STR = "storage";
@@ -30,12 +56,19 @@ var Avatar = can.Map.extend({}, {
 		this.animationTimeout = null;
 		this.mainImg = undefined;
 
+		// Resets an edited gif to have infinite loop
 		// $ gifsicle -b pusheen_happy.gif --loopcount
+
+		// resizes a 350x300 to 300x300 gif
+		// $ gifsicle --crop 25,0-325,300 --output pusheen_excited3.gif pusheen_excited2.gif
+
 
 		this.normalSrc = Util.extentionStr + "images/pusheen_normal.gif";
 		this.partyImgBaseStr = Util.extentionStr + "images/pusheen_party";
+		this.excitedSrc = Util.extentionStr + "images/pusheen_excited.gif";
 
 		this.attr('currentSrc', this.normalSrc);
+		this.attr('isBusy', false);
 
 		this.numPartyImgs = 16;
 		this.currentPartyImgNum = -1;
@@ -77,10 +110,19 @@ var Avatar = can.Map.extend({}, {
 
 	toNormal: function(){
 		this.attr("currentSrc", this.normalSrc);
+		this.attr('isBusy', false);
 	},	
 
 	toHappy: function(){
+		this.attr('isBusy', true);
 		this.attr("currentSrc", this.getPartyImg());
+	},
+
+	toExcited: function(){
+		if (this.attr('currentSrc') != this.excitedSrc){
+			this.attr("currentSrc", this.excitedSrc);
+			this.attr('isBusy', false);
+		}
 	},
 
 	getPartyImg: function(){
@@ -92,6 +134,7 @@ var Avatar = can.Map.extend({}, {
 		}
 
 		this.currentPartyImgNum = num;
+		// return this.partyImgBaseStr + "8.gif";
 		return this.partyImgBaseStr + num.toString() + ".gif";
 	},
 
