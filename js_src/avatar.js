@@ -46,6 +46,8 @@ showing food/play/? buttons
 
 var STORAGE_STR = "storage";
 
+
+
 var Avatar = can.Map.extend({}, {
 	init: function(){
 
@@ -63,15 +65,23 @@ var Avatar = can.Map.extend({}, {
 		// $ gifsicle --crop 25,0-325,300 --output pusheen_excited3.gif pusheen_excited2.gif
 
 
-		this.normalSrc = Util.extentionStr + "images/pusheen_normal.gif";
-		this.partyImgBaseStr = Util.extentionStr + "images/pusheen_party";
-		this.excitedSrc = Util.extentionStr + "images/pusheen_excited.gif";
+		this.normalSrc = Util.extentionStr + "images/pusheen_normal0.gif";
+		this.excitedBaseStr = Util.extentionStr + "images/pusheen_excited";
+
+		this.foodBaseStr = Util.extentionStr + "images/pusheen_food_";
+		//TODO: unlock these by level
+		this.foodStrs = "alot cheetos cookie everything fastfood fish peeps picnic pizza ramen rose snowman sushi treat turkey".split(" ");
+
+		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
+		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
 		this.attr('currentSrc', this.normalSrc);
 		this.attr('isBusy', false);
 
-		this.numPartyImgs = 16;
+		this.numPartyImgs = 9;
 		this.currentPartyImgNum = -1;
+
+		this.animationTimeout = -1;
 
 		this.render();
 		
@@ -113,19 +123,28 @@ var Avatar = can.Map.extend({}, {
 		this.attr('isBusy', false);
 	},	
 
-	toHappy: function(){
+	toEating: function(){
+		// var newSrc = ;
+		var randomStr = this.foodStrs[ Util.getRandomInt(0,this.foodStrs.length-1)];
+		var newSrc = this.foodBaseStr + randomStr + ".gif";
+
+		this.attr('currentSrc', newSrc);
 		this.attr('isBusy', true);
-		this.attr("currentSrc", this.getPartyImg());
+	},
+
+	toPlaying: function(){
+		var randomStr = this.playStrs[ Util.getRandomInt(0,this.playStrs.length-1)];
+		var newSrc = this.playBaseStr + randomStr + ".gif";
+		this.attr('currentSrc', newSrc);
+		this.attr('isBusy', true);
 	},
 
 	toExcited: function(){
-		if (this.attr('currentSrc') != this.excitedSrc){
-			this.attr("currentSrc", this.excitedSrc);
-			this.attr('isBusy', false);
-		}
+		this.attr("currentSrc", this.getExcitedImg());
+		this.attr('isBusy', true);
 	},
 
-	getPartyImg: function(){
+	getExcitedImg: function(){
 		
 		var num = Util.getRandomInt(0, this.numPartyImgs - 1);
 
@@ -135,7 +154,45 @@ var Avatar = can.Map.extend({}, {
 
 		this.currentPartyImgNum = num;
 		// return this.partyImgBaseStr + "8.gif";
-		return this.partyImgBaseStr + num.toString() + ".gif";
+		return this.excitedBaseStr + num.toString() + ".gif";
+	},
+
+
+	// plays the animation
+	/*
+	
+		options{
+			type: play, food, excited
+			duration: something
+			interruptable: TODO
+		}
+
+	*/
+	playAnimation: function(options){
+		clearTimeout(this.animationTimeout);
+
+		if (options == undefined){
+			console.error("playAnimation needs a properly formatted argument");
+		}
+			
+		switch(options.type){
+			case 'play':
+				this.toPlaying();
+				break;
+			case 'food':
+				this.toEating();
+				break;
+			case 'excited':
+				this.toExcited();
+				break;
+			default:
+				return;
+		}
+
+		var _this = this;
+		this.animationTimeout = setTimeout(function(){
+			_this.toNormal();
+		}, Util.getRandomInt(options.duration - 400, options.duration + 400));
 	},
 
 	checkLevel: function(){
@@ -187,6 +244,9 @@ var Avatar = can.Map.extend({}, {
 	},
 
 	alertLevel: function(){
+		// not using this anymore
+		return;
+
 		var str = "Level: " + this.getLevel()
 		console.log(str);
 		// alert(str);

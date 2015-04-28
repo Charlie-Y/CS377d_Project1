@@ -7,12 +7,17 @@ var Util = require('./util.js');
 var AvatarControl = can.Control.extend({
 	defaults: {
 		imgClass: 'avatar-img',
+		hideActionButtonClass: "close",
+		foodButtonClass: "food",
+		playButtonClass: "play",
+		anyButtonClass: "any",
 		isDev: true
 	}
 },{
 	init: function(el, options){
 		this.avatar = options.avatar;
 		this.element.html(can.view( Util.extentionStr + 'mustache/main.mustache', options));
+		this.showingActionButtons = false;
 	},
 
 	// "{avatar} change": function(ev, newVal, oldVal){
@@ -20,12 +25,16 @@ var AvatarControl = can.Control.extend({
 	// },
 
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
-		console.log("Level changed from " + oldVal + " to " + newVal);
+		// console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
 
 		if (amount > 0){
 
-			this.showHappy();
+			this.avatar.playAnimation({
+				type: 'excited',
+				duration: 1500	
+			})
+
 			this.showLevelUp(amount);
 		}
 
@@ -38,12 +47,42 @@ var AvatarControl = can.Control.extend({
 		this.showLevelUp(4);
 	},
 
+	// show the buttons
 	".{imgClass} click": function(el, ev ){
-		// console.log('click');	
-		// if (!this.avatar.isBusy){
-		// 	this.showHappy();
-		// }
+		if (!this.showingActionButtons){
+			this.showActionButtons();
+		}	else {
+			this.hideActionButtons();
+		}
+
 	},
+
+	".{hideActionButtonClass} click": function(el, evl){
+		this.hideActionButtons();
+	},
+
+	".{foodButtonClass} click": function(el, evl){
+		this.avatar.playAnimation({
+				type: 'food',
+				duration: 2500	
+			})
+	},
+
+	".{playButtonClass} click": function(el, evl){
+		this.avatar.playAnimation({
+				type: 'play',
+				duration: 2500	
+			})
+	},
+
+	".{anyButtonClass} click": function(el, evl){
+		this.avatar.playAnimation({
+				type: 'any',
+				duration: 1500	
+			})
+	},
+
+
 
 	".{imgClass} mousemove": function(el, ev){
 		// console.log('mousemove');
@@ -60,15 +99,43 @@ var AvatarControl = can.Control.extend({
 	},
 
 
-	showHappy: function(){
-		clearTimeout(this.animationTimeout);
-			
-		this.avatar.toHappy();
+	showActionButtons: function(){
+		// console.log("showActionButtons");
 
-		var _this = this.avatar;
-		this.animationTimeout = setTimeout(function(){
-			_this.toNormal();
-		}, Util.getRandomInt(1300, 2000));
+		this.showingActionButtons = true;
+		var buttons = this.element.find('.action-buttons .button')
+		buttons.removeClass('hide bounceOut')
+		buttons.addClass('animated bounceIn');
+
+		buttons.unbind();
+		
+		buttons.bind(Util.animEndStr, function(){
+			// console.log("showActionButtons one");
+			$(this).removeClass('bounceIn');
+
+			$(this).unbind();
+		})
+
+	},
+
+	hideActionButtons: function(){
+		// console.log("hideActionButtons");
+		this.showingActionButtons = false;
+		var buttons = this.element.find('.action-buttons .button')
+
+		buttons.removeClass('bounceIn');
+		buttons.addClass('bounceOut');
+
+		buttons.unbind();
+
+		buttons.bind(Util.animEndStr, function(){
+			// console.log("hideActionButtons one");
+
+			$(this).addClass('hide');
+			$(this).removeClass('bounceOut');
+
+			$(this).unbind();
+		})
 	},
 
 	// pops up a little animation...

@@ -44,7 +44,7 @@ $pusheen-background: #fcf0e4;
 
 		cursor: pointer;
 
-
+		z-index: 3;
 	}
 
 	.level-up-message{
@@ -92,14 +92,15 @@ $pusheen-background: #fcf0e4;
 			// position: absolute;
 
 
-			@include transition(all .2s ease-in);
+			@include transition(all .1s ease-in);
 
 			&:hover{
 				font-size: 23px;
+				line-height: 23px;
 			}
 
 			&:active{
-				@include transition-duration(.1s);
+				@include transition-duration(0s);
 
 				font-size: 21px;	
 				background: darken($pusheen-background, 10%);

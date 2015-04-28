@@ -29,6 +29,7 @@
   -webkit-border-radius: 50%;
   border-radius: 50%;
   cursor: pointer;
+  z-index: 3;
 }
 #avatar-wrap .level-up-message {
   font-size: 40px;
@@ -63,19 +64,20 @@
   margin-bottom: 10px;
   background: #fcf0e4;
   color: #66482e;
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in;
+  -moz-transition: all 0.1s ease-in;
+  -o-transition: all 0.1s ease-in;
+  -webkit-transition: all 0.1s ease-in;
+  transition: all 0.1s ease-in;
 }
 #avatar-wrap .action-buttons .button:hover {
   font-size: 23px;
+  line-height: 23px;
 }
 #avatar-wrap .action-buttons .button:active {
-  -moz-transition-duration: 0.1s;
-  -o-transition-duration: 0.1s;
-  -webkit-transition-duration: 0.1s;
-  transition-duration: 0.1s;
+  -moz-transition-duration: 0s;
+  -o-transition-duration: 0s;
+  -webkit-transition-duration: 0s;
+  transition-duration: 0s;
   font-size: 21px;
   background: #f7d6b6;
 }
