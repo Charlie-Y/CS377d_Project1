@@ -38,6 +38,10 @@
 #avatar-wrap .hide {
   display: none !important;
 }
+#avatar-wrap .sneak {
+  opacity: 0;
+  pointer-events: none;
+}
 #avatar-wrap .no {
   display: none !important;
 }
@@ -45,11 +49,10 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
   margin: auto;
-  max-width: 200px;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
+  max-width: 140px;
   cursor: pointer;
   z-index: 3;
 }
@@ -67,17 +70,17 @@
 }
 #avatar-wrap .action-buttons {
   position: absolute;
-  top: -40px;
-  left: 0;
+  top: -30px;
+  left: -75px;
   z-index: 2;
 }
 #avatar-wrap .action-buttons .button {
   position: relative;
   padding: 10px;
-  height: 80px;
-  width: 80px;
+  height: 56px;
+  width: 56px;
   font-family: pusheenFont;
-  font-size: 17px;
+  font-size: 13px;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
@@ -92,16 +95,25 @@
   transition: all 0.1s ease-in;
 }
 #avatar-wrap .action-buttons .button:hover {
-  font-size: 23px;
-  line-height: 23px;
+  font-size: 14px;
 }
 #avatar-wrap .action-buttons .button:active {
   -moz-transition-duration: 0s;
   -o-transition-duration: 0s;
   -webkit-transition-duration: 0s;
   transition-duration: 0s;
-  font-size: 21px;
   background: #f7d6b6;
+}
+#avatar-wrap .action-buttons .button:nth-child(1) {
+  left: 56px;
+  margin-bottom: 0;
+}
+#avatar-wrap .action-buttons .button:nth-child(3) {
+  left: 10px;
+  margin-bottom: 3px;
+}
+#avatar-wrap .action-buttons .button:nth-child(4) {
+  left: 34px;
 }
 #avatar-wrap .action-buttons .button.close {
   position: absolute;
@@ -115,14 +127,74 @@
   -webkit-transition: none;
   transition: none;
 }
-#avatar-wrap .action-buttons .button.food {
-  left: -60px;
+#avatar-wrap .costumes {
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  top: 10px;
+  right: 100px;
+  padding: 20px;
+  padding-right: 30px;
+  max-height: 220px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: #fcf0e4;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  width: 440.0px;
+  max-width: 440.0px;
 }
-#avatar-wrap .action-buttons .button.play {
-  left: -90px;
+#avatar-wrap .costumes::-webkit-scrollbar {
+  position: absolute;
+  width: 8px;
+  padding-right: -8px;
 }
-#avatar-wrap .action-buttons .button.any {
-  left: -72px;
+#avatar-wrap .costumes::-webkit-scrollbar-thumb {
+  background: #d1c8c0;
+  -webkit-border-radius: 1ex;
+}
+#avatar-wrap .costumes::-webkit-scrollbar-corner {
+  background: #000;
+}
+#avatar-wrap .costumes .costume-img-wrap {
+  position: relative;
+  min-height: 103px;
+  min-width: 20%;
+  background: #fcf0e4;
+  margin: 10px;
+  cursor: pointer;
+}
+#avatar-wrap .costumes .costume-img-wrap .name-wrap {
+  left: -10%;
+  top: -10px;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+}
+#avatar-wrap .costumes .costume-img-wrap .name {
+  display: none;
+  white-space: nowrap;
+  background: #fcf0e4;
+  color: #66482e;
+  font-size: 15px;
+  font-family: pusheenFont;
+}
+#avatar-wrap .costumes .costume-img-wrap:hover .name {
+  display: inline-block;
+}
+#avatar-wrap .costumes .costume-img-wrap:nth-child(3n + 1) {
+  clear: left;
+}
+#avatar-wrap .costumes .costume-img {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  margin: auto;
+  max-height: 100px;
+  height: 100px;
 }
 #avatar-wrap .test-buttons {
   position: absolute;

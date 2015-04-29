@@ -7,17 +7,26 @@ var Util = require('./util.js');
 var AvatarControl = can.Control.extend({
 	defaults: {
 		imgClass: 'avatar-img',
-		hideActionButtonClass: "close",
+		menuButtonClass: "menu",
+		costumeButtonClass: "costume",
 		foodButtonClass: "food",
-		playButtonClass: "play",
-		anyButtonClass: "any",
+		statButtonClass: "stat",
 		isDev: false
 	}
 },{
 	init: function(el, options){
 		this.avatar = options.avatar;
+		this.options.costumes = this.avatar.costumes;
+
 		this.element.html(can.view( Util.extentionStr + 'mustache/main.mustache', options));
 		this.showingActionButtons = false;
+
+		this.costumeEl = this.element.find('.costumes');
+		this.showingCostumes = !this.costumeEl.hasClass('hide');
+
+
+		// this.showActionButtons();
+
 	},
 
 	// "{avatar} change": function(ev, newVal, oldVal){
@@ -44,26 +53,22 @@ var AvatarControl = can.Control.extend({
 	},
 
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
-
 		var amount = newVal - oldVal;
-
 		if (amount > 0){
 			if (avatar)
-
 			this.showLevelUp()
 		}
-
 	},
 
 
 	".level-up-button click": function(el, ev){
 
-		// this.showLevelUp();
-		this.showXPUp(5);
+		this.showLevelUp();
+		// this.showXPUp(5);
 	},
 
 	// show the buttons
-	".{imgClass} click": function(el, ev ){
+	".{menuButtonClass} click": function(el, ev ){
 		if (!this.showingActionButtons){
 			this.showActionButtons();
 		}	else {
@@ -72,8 +77,18 @@ var AvatarControl = can.Control.extend({
 
 	},
 
-	".{hideActionButtonClass} click": function(el, evl){
-		this.hideActionButtons();
+	// Prevent scroll events from bubbling out of the costume selector
+	".costumes mousewheel": function(el, ev){
+		var height = el.outerHeight();
+		var scrollHeight = el.get(0).scrollHeight;
+		var delta = -ev.originalEvent.deltaY;
+
+		if(el.get(0).scrollTop === (scrollHeight - height) && delta < 0) {
+			ev.preventDefault();
+			// ev.stopPropagation();
+		} else if (el.get(0).scrollTop === 0 && delta > 0) {
+			ev.preventDefault();
+		}
 	},
 
 	".{foodButtonClass} click": function(el, evl){
@@ -83,21 +98,23 @@ var AvatarControl = can.Control.extend({
 			})
 	},
 
-	".{playButtonClass} click": function(el, evl){
-		this.avatar.playAnimation({
-				type: 'play',
-				duration: 2500	
-			})
-	},
-
-	".{anyButtonClass} click": function(el, evl){
-		this.avatar.playAnimation({
-				type: 'any',
-				duration: 2500	
-			})
+	".{costumeButtonClass} click": function(el, evl){
+		if (this.showingCostumes){
+			this.costumeEl.slideUp();
+			this.showingCostumes = false;
+		} else {
+			this.costumeEl.removeClass('hide');
+			this.costumeEl.slideDown();
+			this.showingCostumes = true;
+		}
 	},
 
 
+	".costume-img-wrap click": function(el, ev){
+		var costume = el.data('costume');
+		this.avatar.changeCostume(costume);
+
+	},
 
 	".{imgClass} mousemove": function(el, ev){
 		// console.log('mousemove');
@@ -118,8 +135,8 @@ var AvatarControl = can.Control.extend({
 		// console.log("showActionButtons");
 
 		this.showingActionButtons = true;
-		var buttons = this.element.find('.action-buttons .button')
-		buttons.removeClass('hide bounceOut')
+		var buttons = this.element.find('.action-buttons .action-button')
+		buttons.removeClass('sneak bounceOut')
 		buttons.addClass('animated bounceIn');
 
 		buttons.unbind();
@@ -136,17 +153,21 @@ var AvatarControl = can.Control.extend({
 	hideActionButtons: function(){
 		// console.log("hideActionButtons");
 		this.showingActionButtons = false;
-		var buttons = this.element.find('.action-buttons .button')
+		var buttons = this.element.find('.action-buttons .action-button')
 
 		buttons.removeClass('bounceIn');
 		buttons.addClass('bounceOut');
 
 		buttons.unbind();
 
+		// hide the costumes as well
+		this.costumeEl.slideUp();
+		this.showingCostumes = false;
+
 		buttons.bind(Util.animEndStr, function(){
 			// console.log("hideActionButtons one");
 
-			$(this).addClass('hide');
+			$(this).addClass('sneak');
 			$(this).removeClass('bounceOut');
 
 			$(this).unbind();
@@ -176,7 +197,9 @@ var AvatarControl = can.Control.extend({
 	showLevelUp: function(){
 		this.showPopupMessage({
 			txt: "Level Up!",
-			color: "#4285f4" // chrome inbox header color
+			color: "#4285f4", // chrome inbox header color
+			duration: 6000
+			// randomLocation:
 		});
 	},
 	/*
@@ -188,7 +211,8 @@ var AvatarControl = can.Control.extend({
 		txt: the string, default none
 		color: the color of the thing, default green
 		randomLocation: to randomly perturb or not, default nope
-		duration: ... this one is a bit harder to, default 1s
+		duration: TODO... this one is a bit harder to, default 1s
+
 	}
 
 	*/
@@ -198,7 +222,7 @@ var AvatarControl = can.Control.extend({
 			return;
 		}
 
-		var message = $("<div class='level-up-message animated fadeOutUpWait'>");
+		var message = $("<div class='level-up-message'>");
 
 		message.text( options.txt);
 
@@ -209,17 +233,15 @@ var AvatarControl = can.Control.extend({
 			message.css('top', Util.getRandomInt(-10, 0) + "px");
 		}
 
+
+
 		if (options.color != undefined ){
 			message.css('color', options.color)
 		}
 
-
-		if (options.duration != undefined){
-			message.css('-webkit-animation-duration', options.duration)
-		}
-
+		message.addClass('animated fadeOutUpWait');
+ 
 		$(this.element).append(message);
-
 		message.one(Util.animEndStr, function(){
 			message.remove();
 		})

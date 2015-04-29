@@ -4,17 +4,27 @@
 <img class="{{imgClass}}" id="avatar-1" src="{{avatar.currentSrc}}">
 
 
-<div class="action-buttons ">
-	<button class="button {{hideActionButtonClass}} hide"> x </button>
+<div class="action-buttons">
+	<button class="button action-button {{costumeButtonClass}} sneak"> Change </button>
+	<button class="button action-button {{foodButtonClass}} sneak"> Feed </button>
+	<button class="button action-button {{statButtonClass}} sneak"> ? </button>
+	<button class="button {{menuButtonClass}} "> ? </button>
 
-	<button class="button {{foodButtonClass}} hide"> FEED </button>
-	<button class="button {{playButtonClass}} hide"> PLAY </button>
-
-	{{#isDev}}
-		<button class="button {{anyButtonClass}} hide no"> ooo </button>
-	{{/isDev}}
+	<div class="costumes hide ">
+		{{#each costumes}}		
+			{{!name}}
+			<div class="costume-img-wrap" {{data 'costume'}}>
+				<div class="name-wrap">
+					<span class="name">{{name}}</span>
+				</div>
+				<img class="costume-img" src="{{normalSrc}}">
+			</div>	
+		{{/costumes}}
+	</div>
 
 </div>
+
+
 
 
 <div class="test-buttons {{^isDev}} hide {{/isDev}}">

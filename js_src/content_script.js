@@ -33,7 +33,9 @@ Some kind of progress bar on a mouseover
 */ 
 
 var $ = require('jquery');
+window.jQuery = $;
 var Util = require('./util.js');
+var CostumeData = require('./costume_data.js');
 var Avatar = require('./avatar.js');
 var InboxTracker = require('./inbox_tracker.js');
 

@@ -17,7 +17,8 @@ and passing them to the
 var BODY_SELECTOR = "body"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
-var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
+
+var SWEEP_SELECTOR= "button.du"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
@@ -98,11 +99,10 @@ InboxTracker.prototype.bindClickEvents = function(){
 	})
 
 	// console.log('bindClickEvents done');
-
 }
 
 InboxTracker.prototype.checkEventsBinded = function(){
-	console.log("checkEventsBinded start");
+	// console.log("checkEventsBinded start");
 	if ($._data($(BODY_SELECTOR).get(0), "events") == undefined){
 	// if ($._data($('.scroll-list-item').get(0), "events") == undefined){
 		console.log("bind failed");

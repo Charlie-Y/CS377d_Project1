@@ -34,7 +34,9 @@ Some kind of progress bar on a mouseover
 */ 
 
 var $ = require('jquery');
+window.jQuery = $;
 var Util = require('./util.js');
+var CostumeData = require('./costume_data.js');
 var Avatar = require('./avatar.js');
 var InboxTracker = require('./inbox_tracker.js');
 
@@ -68,15 +70,22 @@ var InboxTracker = require('./inbox_tracker.js');
 
 
 
-},{"./avatar.js":2,"./inbox_tracker.js":6,"./util.js":7,"jquery":8}],2:[function(require,module,exports){
+},{"./avatar.js":2,"./costume_data.js":5,"./inbox_tracker.js":6,"./util.js":7,"jquery":8}],2:[function(require,module,exports){
 var $ = require('jquery'); 
-window.jQuery = $;
 var Util = require('./util.js');
 // I think can gets defined on the global namespace, so this is just a formality to make sure it is loaded first
 var _can = require('./can.jquery.js');
 var AvatarControl = require("./avatar_control.js");
-var CostumesData = require("./costume_data.js");
+var CostumeData = require("./costume_data.js");
 
+/*
+
+TODO: show a little bar that gets bigger with each +1
+TODO: show a level up message with a slightly nicer animation
+TODO: allow changing default costumes
+
+
+*/
 
 /*
 
@@ -177,7 +186,7 @@ Button menu:
 open/close menu
 
 change costume
-	- lists all costuems
+	- lists all costumes
 random costume
 
 
@@ -221,6 +230,8 @@ leveling up: every 7 levels, you gain a new costume
 
 
 
+
+
 -- interaction
 when you click on the buddy, the menu icons appear
 showing food/play/? buttons
@@ -239,6 +250,7 @@ var Avatar = can.Map.extend({}, {
 
 		this.attr('xp', this.getXP());
 		this.updateLevel();
+
 
 		this.name = "pusheen";
 
@@ -269,6 +281,7 @@ var Avatar = can.Map.extend({}, {
 		// }
 		// this.allStrs.concat(foodStrs)
 		// this.allStrs.concat(playStrs)
+		this.loadCostumes();
 
 		this.attr('currentSrc', this.normalSrc);
 		this.attr('isBusy', false);
@@ -463,7 +476,31 @@ var Avatar = can.Map.extend({}, {
 
 	getLevel: function(){
 		return Math.floor(this.xp / this.xpPerLevel) + 1;
+	},
+
+
+	// ===== Costume selection code ==== //
+
+	loadCostumes: function(){
+		this.costumes = CostumeData;
+
+		if (localStorage.getItem('normal_costume') === 'true'){
+			this.attr('normalSrc', localStorage.getItem('normal_src'));	
+			this.attr('currentSrc', localStorage.getItem('normal_src'));
+		}
+		// console.log(this.costumes);
+	},
+
+	changeCostume:function (costume){
+		console.log("changing to " + costume.name);
+
+		localStorage.setItem('normal_costume', 'true');
+		localStorage.setItem('normal_src', costume.normalSrc);
+
+		this.attr('normalSrc', costume.normalSrc);
+		this.attr('currentSrc', costume.normalSrc);
 	}
+
 });
 
 
@@ -485,17 +522,26 @@ var Util = require('./util.js');
 var AvatarControl = can.Control.extend({
 	defaults: {
 		imgClass: 'avatar-img',
-		hideActionButtonClass: "close",
+		menuButtonClass: "menu",
+		costumeButtonClass: "costume",
 		foodButtonClass: "food",
-		playButtonClass: "play",
-		anyButtonClass: "any",
+		statButtonClass: "stat",
 		isDev: false
 	}
 },{
 	init: function(el, options){
 		this.avatar = options.avatar;
+		this.options.costumes = this.avatar.costumes;
+
 		this.element.html(can.view( Util.extentionStr + 'mustache/main.mustache', options));
 		this.showingActionButtons = false;
+
+		this.costumeEl = this.element.find('.costumes');
+		this.showingCostumes = !this.costumeEl.hasClass('hide');
+
+
+		// this.showActionButtons();
+
 	},
 
 	// "{avatar} change": function(ev, newVal, oldVal){
@@ -522,26 +568,22 @@ var AvatarControl = can.Control.extend({
 	},
 
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
-
 		var amount = newVal - oldVal;
-
 		if (amount > 0){
 			if (avatar)
-
 			this.showLevelUp()
 		}
-
 	},
 
 
 	".level-up-button click": function(el, ev){
 
-		// this.showLevelUp();
-		this.showXPUp(5);
+		this.showLevelUp();
+		// this.showXPUp(5);
 	},
 
 	// show the buttons
-	".{imgClass} click": function(el, ev ){
+	".{menuButtonClass} click": function(el, ev ){
 		if (!this.showingActionButtons){
 			this.showActionButtons();
 		}	else {
@@ -550,8 +592,18 @@ var AvatarControl = can.Control.extend({
 
 	},
 
-	".{hideActionButtonClass} click": function(el, evl){
-		this.hideActionButtons();
+	// Prevent scroll events from bubbling out of the costume selector
+	".costumes mousewheel": function(el, ev){
+		var height = el.outerHeight();
+		var scrollHeight = el.get(0).scrollHeight;
+		var delta = -ev.originalEvent.deltaY;
+
+		if(el.get(0).scrollTop === (scrollHeight - height) && delta < 0) {
+			ev.preventDefault();
+			// ev.stopPropagation();
+		} else if (el.get(0).scrollTop === 0 && delta > 0) {
+			ev.preventDefault();
+		}
 	},
 
 	".{foodButtonClass} click": function(el, evl){
@@ -561,21 +613,23 @@ var AvatarControl = can.Control.extend({
 			})
 	},
 
-	".{playButtonClass} click": function(el, evl){
-		this.avatar.playAnimation({
-				type: 'play',
-				duration: 2500	
-			})
-	},
-
-	".{anyButtonClass} click": function(el, evl){
-		this.avatar.playAnimation({
-				type: 'any',
-				duration: 2500	
-			})
+	".{costumeButtonClass} click": function(el, evl){
+		if (this.showingCostumes){
+			this.costumeEl.slideUp();
+			this.showingCostumes = false;
+		} else {
+			this.costumeEl.removeClass('hide');
+			this.costumeEl.slideDown();
+			this.showingCostumes = true;
+		}
 	},
 
 
+	".costume-img-wrap click": function(el, ev){
+		var costume = el.data('costume');
+		this.avatar.changeCostume(costume);
+
+	},
 
 	".{imgClass} mousemove": function(el, ev){
 		// console.log('mousemove');
@@ -596,8 +650,8 @@ var AvatarControl = can.Control.extend({
 		// console.log("showActionButtons");
 
 		this.showingActionButtons = true;
-		var buttons = this.element.find('.action-buttons .button')
-		buttons.removeClass('hide bounceOut')
+		var buttons = this.element.find('.action-buttons .action-button')
+		buttons.removeClass('sneak bounceOut')
 		buttons.addClass('animated bounceIn');
 
 		buttons.unbind();
@@ -614,17 +668,21 @@ var AvatarControl = can.Control.extend({
 	hideActionButtons: function(){
 		// console.log("hideActionButtons");
 		this.showingActionButtons = false;
-		var buttons = this.element.find('.action-buttons .button')
+		var buttons = this.element.find('.action-buttons .action-button')
 
 		buttons.removeClass('bounceIn');
 		buttons.addClass('bounceOut');
 
 		buttons.unbind();
 
+		// hide the costumes as well
+		this.costumeEl.slideUp();
+		this.showingCostumes = false;
+
 		buttons.bind(Util.animEndStr, function(){
 			// console.log("hideActionButtons one");
 
-			$(this).addClass('hide');
+			$(this).addClass('sneak');
 			$(this).removeClass('bounceOut');
 
 			$(this).unbind();
@@ -654,7 +712,9 @@ var AvatarControl = can.Control.extend({
 	showLevelUp: function(){
 		this.showPopupMessage({
 			txt: "Level Up!",
-			color: "#4285f4" // chrome inbox header color
+			color: "#4285f4", // chrome inbox header color
+			duration: 6000
+			// randomLocation:
 		});
 	},
 	/*
@@ -666,7 +726,8 @@ var AvatarControl = can.Control.extend({
 		txt: the string, default none
 		color: the color of the thing, default green
 		randomLocation: to randomly perturb or not, default nope
-		duration: ... this one is a bit harder to, default 1s
+		duration: TODO... this one is a bit harder to, default 1s
+
 	}
 
 	*/
@@ -676,7 +737,7 @@ var AvatarControl = can.Control.extend({
 			return;
 		}
 
-		var message = $("<div class='level-up-message animated fadeOutUpWait'>");
+		var message = $("<div class='level-up-message'>");
 
 		message.text( options.txt);
 
@@ -687,17 +748,15 @@ var AvatarControl = can.Control.extend({
 			message.css('top', Util.getRandomInt(-10, 0) + "px");
 		}
 
+
+
 		if (options.color != undefined ){
 			message.css('color', options.color)
 		}
 
-
-		if (options.duration != undefined){
-			message.css('-webkit-animation-duration', options.duration)
-		}
-
+		message.addClass('animated fadeOutUpWait');
+ 
 		$(this.element).append(message);
-
 		message.one(Util.animEndStr, function(){
 			message.remove();
 		})
@@ -7478,9 +7537,10 @@ define('can/can', [
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
-var $ = require('jquery');
-var _can = require('./can.jquery.js');
+var $ = require('jquery'); 
+var Util = require('./util.js');
 
+var _can = require('./can.jquery.js');
 /*
 
 This just exports a giant JS object which has data on it
@@ -7522,9 +7582,36 @@ food: [base]_food_[num] - played when you press the feed button, don't do for no
 
 */
 
+var c = can.Construct.extend({},
+{
+	init: function(name, baseStr, normalNum, excitedNum, foodNum){
+		this.name = name;
+		this.base = baseStr || "pusheen";
+		this.normalNum = normalNum || 0;
+		this.excitedNum = excitedNum || 0;
+		this.foodNum = foodNum || 0 ;
+
+		this.normalSrc = Util.extentionStr + "images/" + this.base + "_" + "normal" + "_0.gif";
+	}
+})
 
 
-var data = {};
+var data = new can.List([
+	new c('Pusheen the Cat', 'normal', 1, 1, 0),
+	new c('Lazy Pusheen', 'lazy', 1, 1, 0),
+	new c('Pusheenicorn', 'pusheenicorn', 1, 1, 0),
+	new c('Sherlock Pusheen', 'sherlock', 1, 1, 1),
+	new c('Fancy Pusheen', 'fancy', 1, 1, 1),
+	new c('Pusheen in Shades', 'shades', 3, 1, 0),
+	new c('Catniss Pusheen', 'catniss', 1, 0, 0),
+	new c('Pusheen the Adventurer', 'adventuretime', 1, 0, 0),
+	new c('Pusheen in Bread', 'bread', 1, 0, 0),
+	new c('Sailor Mew', 'sailormew', 1, 0, 0),
+	new c('R2P2', 'r2d2', 1, 0, 0),
+	new c('Kitty Perry', 'kittyperry', 1, 0, 0)
+
+]);
+
 module.exports = data;
 
 
@@ -7536,7 +7623,7 @@ module.exports = data;
 
 
 
-},{"./can.jquery.js":4,"jquery":8}],6:[function(require,module,exports){
+},{"./can.jquery.js":4,"./util.js":7,"jquery":8}],6:[function(require,module,exports){
 var $ = require('jquery'); 
 var Util = require('./util.js');
 
@@ -7556,7 +7643,8 @@ and passing them to the
 var BODY_SELECTOR = "body"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
-var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
+
+var SWEEP_SELECTOR= "button.du"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
@@ -7637,11 +7725,10 @@ InboxTracker.prototype.bindClickEvents = function(){
 	})
 
 	// console.log('bindClickEvents done');
-
 }
 
 InboxTracker.prototype.checkEventsBinded = function(){
-	console.log("checkEventsBinded start");
+	// console.log("checkEventsBinded start");
 	if ($._data($(BODY_SELECTOR).get(0), "events") == undefined){
 	// if ($._data($('.scroll-list-item').get(0), "events") == undefined){
 		console.log("bind failed");

@@ -1,11 +1,18 @@
 var $ = require('jquery'); 
-window.jQuery = $;
 var Util = require('./util.js');
 // I think can gets defined on the global namespace, so this is just a formality to make sure it is loaded first
 var _can = require('./can.jquery.js');
 var AvatarControl = require("./avatar_control.js");
-var CostumesData = require("./costume_data.js");
+var CostumeData = require("./costume_data.js");
 
+/*
+
+TODO: show a little bar that gets bigger with each +1
+TODO: show a level up message with a slightly nicer animation
+TODO: allow changing default costumes
+
+
+*/
 
 /*
 
@@ -106,7 +113,7 @@ Button menu:
 open/close menu
 
 change costume
-	- lists all costuems
+	- lists all costumes
 random costume
 
 
@@ -150,6 +157,8 @@ leveling up: every 7 levels, you gain a new costume
 
 
 
+
+
 -- interaction
 when you click on the buddy, the menu icons appear
 showing food/play/? buttons
@@ -168,6 +177,7 @@ var Avatar = can.Map.extend({}, {
 
 		this.attr('xp', this.getXP());
 		this.updateLevel();
+
 
 		this.name = "pusheen";
 
@@ -198,6 +208,7 @@ var Avatar = can.Map.extend({}, {
 		// }
 		// this.allStrs.concat(foodStrs)
 		// this.allStrs.concat(playStrs)
+		this.loadCostumes();
 
 		this.attr('currentSrc', this.normalSrc);
 		this.attr('isBusy', false);
@@ -392,7 +403,31 @@ var Avatar = can.Map.extend({}, {
 
 	getLevel: function(){
 		return Math.floor(this.xp / this.xpPerLevel) + 1;
+	},
+
+
+	// ===== Costume selection code ==== //
+
+	loadCostumes: function(){
+		this.costumes = CostumeData;
+
+		if (localStorage.getItem('normal_costume') === 'true'){
+			this.attr('normalSrc', localStorage.getItem('normal_src'));	
+			this.attr('currentSrc', localStorage.getItem('normal_src'));
+		}
+		// console.log(this.costumes);
+	},
+
+	changeCostume:function (costume){
+		console.log("changing to " + costume.name);
+
+		localStorage.setItem('normal_costume', 'true');
+		localStorage.setItem('normal_src', costume.normalSrc);
+
+		this.attr('normalSrc', costume.normalSrc);
+		this.attr('currentSrc', costume.normalSrc);
 	}
+
 });
 
 
