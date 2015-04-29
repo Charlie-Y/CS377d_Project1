@@ -4,8 +4,9 @@
 <img class="{{imgClass}}" id="avatar-1" src="{{avatar.currentSrc}}">
 
 
-<div class="action-buttons">
-	<button class="button {{hideActionButtonClass}} hide"> X </button>
+<div class="action-buttons hide">
+	<button class="button {{hideActionButtonClass}} hide"> x </button>
+	
 	<button class="button {{foodButtonClass}} hide"> FEED </button>
 	<button class="button {{playButtonClass}} hide"> PLAY </button>
 
@@ -17,7 +18,7 @@
 
 
 <div class="test-buttons {{^isDev}} hide {{/isDev}}">
-{{avatar.level}}	
+	{{avatar.xp}}, {{avatar.level}}	
 	
 	<button class="button level-up-button">Level Up Test</button>
 

@@ -21,7 +21,7 @@ var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)']
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
-var UNDO_SELECTOR = "span.fD";
+var UNDO_SELECTOR = "[js-action='global.undo']";
 var UNDO_PARENT_SELECTOR = ".IbRB2e";
 
 var lastLevelIncrease = 0;
@@ -59,8 +59,8 @@ InboxTracker.prototype.bindClickEvents = function(){
 		console.log("mark done clicked");
 		// increaseLevel(1);
 		// alertLevel();
-		_this.avatar.increaseLevel(1);
-		_this.avatar.alertLevel();	
+		_this.avatar.increaseXP(1);
+		_this.avatar.alertXP();	
 	})
 
 	// TODO: will also need to react to Confirm Sweepalls
@@ -77,8 +77,8 @@ InboxTracker.prototype.bindClickEvents = function(){
 		// there needs to be some way to figure out how many are swept away
 		// probably set up some kind of delay before checking...
 		console.log("sweep all clicked, " + items.size() + " items cleared");
-		_this.avatar.increaseLevel(items.size());
-		_this.avatar.alertLevel();
+		_this.avatar.increaseXP(items.size());
+		_this.avatar.alertXP();
 	})
 
 
@@ -86,15 +86,15 @@ InboxTracker.prototype.bindClickEvents = function(){
 		console.log("mark undone clicked");
 
 		// undoLevelChange();
-		_this.avatar.decreaseLevel(1);
-		_this.avatar.alertLevel();
+		_this.avatar.decreaseXP(1);
+		_this.avatar.alertXP();
 	})
 
 	$(UNDO_PARENT_SELECTOR).on('click', UNDO_SELECTOR, function(event){
 		console.log("undo clicked");
 
-		_this.avatar.undoLevelChange();
-		_this.avatar.alertLevel();
+		_this.avatar.undoXPChange();
+		_this.avatar.alertXP();
 	})
 
 	// console.log('bindClickEvents done');

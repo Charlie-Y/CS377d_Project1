@@ -68,14 +68,14 @@ var InboxTracker = require('./inbox_tracker.js');
 
 
 
-},{"./avatar.js":2,"./inbox_tracker.js":5,"./util.js":6,"jquery":7}],2:[function(require,module,exports){
+},{"./avatar.js":2,"./inbox_tracker.js":6,"./util.js":7,"jquery":8}],2:[function(require,module,exports){
 var $ = require('jquery'); 
 window.jQuery = $;
 var Util = require('./util.js');
 // I think can gets defined on the global namespace, so this is just a formality to make sure it is loaded first
 var _can = require('./can.jquery.js');
 var AvatarControl = require("./avatar_control.js");
-
+var CostumesData = require("./costume_data.js");
 
 
 /*
@@ -94,18 +94,131 @@ Lets figure out how this whole thing will work
 -Every time you mark done you get +1 XP
 -7 XP will let you level up
 
+/////////////////
+/////////////////
 
-on level up you gain a new "play" or a new "food"
+LEVELING UP
 
-types of reactions: 
+-- unlocks costumes
+you can change your default pushene costume. 
+that will change the default animation
+and that will change the type of dance animations
+and what will happen once you click on the pusheen
 
-normal
-food
-dance/play
+-- unlocks new foods
+this will just allow pusheen to eat different foods
 
-excited - on mouseover
+i think it is fine what we have now. just food and costumes are enough
+and there should just be a giant repository of "other" things that
+can happen at any time
 
-stories - 3 part things
+Ideally - 
+each costume would have many celebration animations
+each costume should have several eating animations
+
+
+For now -
+
+costumes just unlock default animations
+and add a new 'dance' animation if I can find one
+
+Clicking pusheen will make pusheen dance with a costume related animation
+or perhaps cycle the current animation
+
+move the action buttons to a menu button
+
+food doesn't level up
+
+how random shoud the pusheen dances be? 
+thre are clearly some celebrating animations
+
+and I want the costume thing to exist, becuaes it is cute
+soooooooooooooo
+
+perhaps you unlock animations? 
+like, EVERY SINGLE ANIMATION
+
+but it is very very cute to have a unicorn pusheen that you can cycle through. 
+
+some animations ar enot worthy of costuming... but maybe they are all worhty 
+of costuming....
+
+maybe not call them costuems, that changes my idea of the thing and sets it in a very
+DLC orientation. perhaps it is like the facebook sticker thing where you get them all
+
+should we make it all abut pusheen? i dunno.
+NO. this should be modular. expect / pretend like another character can sit in
+
+
+feeding needs to be its own thing? 
+yeah, because there is a tomagatchi aspect to this whole thing
+
+
+
+----
+
+necessary:
+
+waiting
+celebrating
+eating
+
+
+costumes unlock default animations
+costumes add celebrate/dance/waiting animations
+clicking on the pusheen cycles through the costume based animations
+	which include the celebrate/dance/waiting animations
+
+most costumes can be simple things
+costumes are passivable - that is the main requirement
+
+Button menu:
+
+open/close menu
+
+change costume
+	- lists all costuems
+random costume
+
+
+
+
+--- Costumes ---
+
+Sherlock
+Unicorn
+Fancy
+Shades
+Kitty Perry
+Harry Potter
+R2D2
+3D pusheen
+Cupid
+Santa
+Food Pusheens
+Techno
+Giant pusheen
+Stormy the cat
+Uniqlo pusheen
+mustache pusheen
+halloween pusheen
+Career pusheen
+4th of july pusheen
+lazy pusheen
+batman
+celebrity pusheen
+16-bit pusheen
+pokemon pusheen
+my little pusheen
+skyrim pusheen
+
+/////////////////
+/////////////////
+
+
+leveling up: every 7 levels, you gain a new costume
+
+
 
 
 -- interaction
@@ -122,12 +235,14 @@ var STORAGE_STR = "storage";
 var Avatar = can.Map.extend({}, {
 	init: function(){
 
-		this.attr('level', this.getLevel());
+		this.xpPerLevel = 7;
+
+		this.attr('xp', this.getXP());
+		this.updateLevel();
 
 		this.name = "pusheen";
 
 		this.animationTimeout = null;
-		this.mainImg = undefined;
 
 		// Resets an edited gif to have infinite loop
 		// $ gifsicle -b pusheen_happy.gif --loopcount
@@ -159,8 +274,10 @@ var Avatar = can.Map.extend({}, {
 		this.attr('isBusy', false);
 
 		this.currentPartyImgNum = -1;
-
 		this.animationTimeout = -1;
+
+
+
 
 		this.render();
 		
@@ -169,33 +286,11 @@ var Avatar = can.Map.extend({}, {
 	render: function(){
 		this.div = $("<div id='avatar-wrap'>");
 		$('body').append(this.div);
-
-		// // Do can.js things with this
-		// Avatar.prototype.render = function(){
-		// 	var div = $("<div id='avatar-wrap'>");
-		// 	var img = $("<img class='avatar-img' id='avatar-1'>");
-
 		this.control = new AvatarControl( this.div, {avatar: this});
-		// 	img.attr('src', this.normalSrc);
-		// 	img.attr('loop', true);
-
-		// 	div.append(img);
-
-		// 	$('body').append(div);
-
-		// 	this.mainImg = img;
-		// }
 	},
 
-	levelUp: function(){
-		this.level++;
-	},
 
-	// Moved this stuff to the avatar_control
-	onLevelChange: function(amount){
-		// This should track internal changes.
-		// the control is in charge of view changes
-	},
+	// ======= Animation related Code ======== //
 
 	toNormal: function(){
 		this.attr("currentSrc", this.normalSrc);
@@ -287,61 +382,87 @@ var Avatar = can.Map.extend({}, {
 		}, Util.getRandomInt(options.duration - 400, options.duration + 400));
 	},
 
-	checkLevel: function(){
-		var level = localStorage.getItem(STORAGE_STR);
-		if (level == null){
+
+	// ===== XP related code ====== //
+
+	// Moved this stuff to the avatar_control
+	onXPChange: function(amount){
+		// This should track internal changes.
+		// the control is in charge of view changes
+		this.updateLevel();
+	},
+
+	checkXP: function(){
+		var xp = localStorage.getItem(STORAGE_STR);
+		if (xp == null){
 			localStorage.setItem(STORAGE_STR, 0);
 		}
 	},
 
-	getLevel: function(){
-		this.checkLevel();
+	getXP: function(){
+		this.checkXP();
 
 		return localStorage.getItem(STORAGE_STR);
 	},
 
-	changeLevel: function(val){
-		this.checkLevel();
+	changeXP: function(val){
+		this.checkXP();
 
-		var level = parseInt(localStorage.getItem(STORAGE_STR));
-		level += val;
-		lastLevelIncrease = val;
+		var xp = parseInt(localStorage.getItem(STORAGE_STR));
+		xp += val;
+		this.lastXPIncrease = val;
 
+		// console.log(lastXPIncrease)
 
-		this.attr('level', level);
+		this.attr('xp', xp);
 		// Here is where we pass it on
-		this.onLevelChange(val);
+		this.onXPChange(val);
 
-		localStorage.setItem(STORAGE_STR, level);
+
+		localStorage.setItem(STORAGE_STR, xp);
 	},
 
-	increaseLevel: function(amount){
+	increaseXP: function(amount){
 		var amt = amount == undefined ? 1 : amount;
 
-		this.checkLevel();
-		this.changeLevel(amt);
+		this.checkXP();
+		this.changeXP(amt);
 	},
 
-	decreaseLevel: function(amount){
+	decreaseXP: function(amount){
 		var amt = amount == undefined ? 1 : amount;
 
-		this.checkLevel();
-		this.changeLevel( -amt );
+		this.checkXP();
+		this.changeXP( -amt );
 	},
 
 
-	undoLevelChange: function(){
-		this.checkLevel();
-		this.changeLevel( -lastLevelIncrease );
+	undoXPChange: function(){
+		this.checkXP();
+		this.changeXP( -this.lastXPIncrease );
 	},
 
-	alertLevel: function(){
+	alertXP: function(){
 		// not using this anymore
-		return;
+		// return;
 
-		var str = "Level: " + this.getLevel()
+		var str = "XP: " + this.getXP()
 		console.log(str);
 		// alert(str);
+	},
+
+	// ===== Level related code ====== //
+
+	isNewLevel: function(){
+		return (this.xp % this.xpPerLevel) == 0;
+	},
+
+	updateLevel: function(){
+		this.attr('level', this.getLevel());
+	},
+
+	getLevel: function(){
+		return Math.floor(this.xp / this.xpPerLevel) + 1;
 	}
 });
 
@@ -354,7 +475,7 @@ var Avatar = can.Map.extend({}, {
 
 
 module.exports = Avatar;
-},{"./avatar_control.js":3,"./can.jquery.js":4,"./util.js":6,"jquery":7}],3:[function(require,module,exports){
+},{"./avatar_control.js":3,"./can.jquery.js":4,"./costume_data.js":5,"./util.js":7,"jquery":8}],3:[function(require,module,exports){
 var $ = require('jquery');
 var _can = require('./can.jquery.js');
 var Util = require('./util.js');
@@ -368,7 +489,7 @@ var AvatarControl = can.Control.extend({
 		foodButtonClass: "food",
 		playButtonClass: "play",
 		anyButtonClass: "any",
-		isDev: false
+		isDev: true
 	}
 },{
 	init: function(el, options){
@@ -381,7 +502,7 @@ var AvatarControl = can.Control.extend({
 	// 	console.log("Level changed from " + oldVal + " to " + newVal);
 	// },
 
-	"{avatar} level": function(avatar, eventType, newVal, oldVal){
+	"{avatar} xp": function(avatar, eventType, newVal, oldVal){
 		// console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
 
@@ -392,25 +513,40 @@ var AvatarControl = can.Control.extend({
 				duration: 1500	
 			})
 
-			this.showLevelUp(amount);
+			// Hum, what to do if many things appear
+			if (!avatar.isNewLevel()){
+				this.showXPUp(amount);
+			}
 		}
 
 	},
 
+	"{avatar} level": function(avatar, eventType, newVal, oldVal){
+
+		var amount = newVal - oldVal;
+
+		if (amount > 0){
+			if (avatar)
+
+			this.showLevelUp()
+		}
+
+	},
 
 
 	".level-up-button click": function(el, ev){
 
-		this.showLevelUp(4);
+		// this.showLevelUp();
+		this.showXPUp(5);
 	},
 
 	// show the buttons
 	".{imgClass} click": function(el, ev ){
-		if (!this.showingActionButtons){
-			this.showActionButtons();
-		}	else {
-			this.hideActionButtons();
-		}
+		// if (!this.showingActionButtons){
+		// 	this.showActionButtons();
+		// }	else {
+		// 	this.hideActionButtons();
+		// }
 
 	},
 
@@ -496,10 +632,10 @@ var AvatarControl = can.Control.extend({
 	},
 
 	// pops up a little animation...
-	showLevelUp: function(amount){
+	showXPUp: function(amount){
 
 		for (var i = 0; i < amount; i++){
-			console.log("showLevelUp");
+			// console.log("showLevelUp");
 			var _this = this;
 
 			setTimeout(function(){
@@ -507,13 +643,20 @@ var AvatarControl = can.Control.extend({
 				_this.showPopupMessage({
 					txt: "+1",
 					// color: 
-					randomLocation: true
+					randomLocation: amount != 1
 				});
-			}, 70 * i);
+			}, 150 * i);
 		}
 
 	},
 
+
+	showLevelUp: function(){
+		this.showPopupMessage({
+			txt: "Level Up!",
+			color: "#4285f4" // chrome inbox header color
+		});
+	},
 	/*
 	
 	Popups up a little message thingy
@@ -533,14 +676,14 @@ var AvatarControl = can.Control.extend({
 			return;
 		}
 
-		var message = $("<div class='level-up-message animated fadeOutUp'>");
+		var message = $("<div class='level-up-message animated fadeOutUpWait'>");
 
 		message.text( options.txt);
 
 		// expected to short circtui on failures
 		if (options.randomLocation != undefined && options.randomLocation){
 			// randomly perturb the +1s
-			message.css('width', Util.getRandomInt(80, 120) + "%");
+			message.css('width', Util.getRandomInt(50, 150) + "%");
 			message.css('top', Util.getRandomInt(-10, 0) + "px");
 		}
 
@@ -576,7 +719,7 @@ module.exports = AvatarControl;
 
 
 
-},{"./can.jquery.js":4,"./util.js":6,"jquery":7}],4:[function(require,module,exports){
+},{"./can.jquery.js":4,"./util.js":7,"jquery":8}],4:[function(require,module,exports){
 (function (global){
 /*!
  * CanJS - 2.2.4
@@ -7335,6 +7478,65 @@ define('can/can', [
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
+/*
+
+This just exports a giant JS object which has data on it
+
+
+CostumeData:
+
+img file format: 
+
+[base]_[type]_[num]
+
+ex: 
+
+pusheenicorn_normal_0
+
+{
+	name: 'Pusheenicorn!',
+	base: 'pusheenicorn',
+	normal: 2, 
+	excited: 3,
+	food: 0
+}
+
+{
+	name:
+	base:
+	normal:
+	excited:
+	food: 
+}
+
+name: "presentable name", people will see this name
+base: img base string. [base]_[type]_[num]
+normal: number of images with format [base]_normal_[num], these will
+be played while nothing is happening
+excited: [base]_excited_[num] - these will be played on a mark done
+food: [base]_food_[num] - played when you press the feed button, don't do for now
+
+
+*/
+
+
+function CD(){
+
+}
+
+var data = {};
+module.exports = data;
+
+
+
+
+
+
+
+
+
+
+},{}],6:[function(require,module,exports){
 var $ = require('jquery'); 
 var Util = require('./util.js');
 
@@ -7358,7 +7560,7 @@ var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)']
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
-var UNDO_SELECTOR = "span.fD";
+var UNDO_SELECTOR = "[js-action='global.undo']";
 var UNDO_PARENT_SELECTOR = ".IbRB2e";
 
 var lastLevelIncrease = 0;
@@ -7396,8 +7598,8 @@ InboxTracker.prototype.bindClickEvents = function(){
 		console.log("mark done clicked");
 		// increaseLevel(1);
 		// alertLevel();
-		_this.avatar.increaseLevel(1);
-		_this.avatar.alertLevel();	
+		_this.avatar.increaseXP(1);
+		_this.avatar.alertXP();	
 	})
 
 	// TODO: will also need to react to Confirm Sweepalls
@@ -7414,8 +7616,8 @@ InboxTracker.prototype.bindClickEvents = function(){
 		// there needs to be some way to figure out how many are swept away
 		// probably set up some kind of delay before checking...
 		console.log("sweep all clicked, " + items.size() + " items cleared");
-		_this.avatar.increaseLevel(items.size());
-		_this.avatar.alertLevel();
+		_this.avatar.increaseXP(items.size());
+		_this.avatar.alertXP();
 	})
 
 
@@ -7423,15 +7625,15 @@ InboxTracker.prototype.bindClickEvents = function(){
 		console.log("mark undone clicked");
 
 		// undoLevelChange();
-		_this.avatar.decreaseLevel(1);
-		_this.avatar.alertLevel();
+		_this.avatar.decreaseXP(1);
+		_this.avatar.alertXP();
 	})
 
 	$(UNDO_PARENT_SELECTOR).on('click', UNDO_SELECTOR, function(event){
 		console.log("undo clicked");
 
-		_this.avatar.undoLevelChange();
-		_this.avatar.alertLevel();
+		_this.avatar.undoXPChange();
+		_this.avatar.alertXP();
 	})
 
 	// console.log('bindClickEvents done');
@@ -7453,7 +7655,7 @@ InboxTracker.prototype.checkEventsBinded = function(){
 
 module.exports = InboxTracker;
 
-},{"./util.js":6,"jquery":7}],6:[function(require,module,exports){
+},{"./util.js":7,"jquery":8}],7:[function(require,module,exports){
 var $ = require('jquery');
 var Util = {};
 module.exports = Util;
@@ -7469,7 +7671,7 @@ Util.extentionStr = $('#extension-holder').attr('data-extension-id');
 // Util.extentionStr = chrome.extension.getURL('');
 
 Util.animEndStr = 'webkitAnimationEnd';
-},{"jquery":7}],7:[function(require,module,exports){
+},{"jquery":8}],8:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/

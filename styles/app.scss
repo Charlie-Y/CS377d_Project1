@@ -8,6 +8,31 @@ $pusheen-background: #fcf0e4;
 	src: url(./pusheenFont.ttf);
 }
 
+
+///// Animations
+@-webkit-keyframes fadeOutUpWait {
+	0% {
+		opacity: 0;
+	}
+
+	35%{
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+	}
+
+	100% {
+		opacity: 0;
+		-webkit-transform: translate3d(0, -100%, 0);
+		transform: translate3d(0, -100%, 0);
+	}
+}
+
+
+.fadeOutUpWait {
+	-webkit-animation-name: fadeOutUpWait;
+}
+
 #avatar-wrap{
 	min-width: 200px;
 	max-width: 200px;
@@ -31,6 +56,10 @@ $pusheen-background: #fcf0e4;
 
 
 	.hide{
+		display: none !important;
+	}
+
+	.no{
 		display: none !important;
 	}
 
@@ -58,7 +87,7 @@ $pusheen-background: #fcf0e4;
 		z-index: 4;
 		left:0;
 		right:0;
-		top:-5px; 
+		top:-25px; 
 
 		// width: 100px;
 		text-align: center;
@@ -159,4 +188,7 @@ $pusheen-background: #fcf0e4;
 			outline: none;
 		}
 	}
+
+
+
 }

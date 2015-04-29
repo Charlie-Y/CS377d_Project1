@@ -4,7 +4,7 @@ var Util = require('./util.js');
 // I think can gets defined on the global namespace, so this is just a formality to make sure it is loaded first
 var _can = require('./can.jquery.js');
 var AvatarControl = require("./avatar_control.js");
-
+var CostumesData = require("./costume_data.js");
 
 
 /*
@@ -23,18 +23,131 @@ Lets figure out how this whole thing will work
 -Every time you mark done you get +1 XP
 -7 XP will let you level up
 
+/////////////////
+/////////////////
 
-on level up you gain a new "play" or a new "food"
+LEVELING UP
 
-types of reactions: 
+-- unlocks costumes
+you can change your default pushene costume. 
+that will change the default animation
+and that will change the type of dance animations
+and what will happen once you click on the pusheen
 
-normal
-food
-dance/play
+-- unlocks new foods
+this will just allow pusheen to eat different foods
 
-excited - on mouseover
+i think it is fine what we have now. just food and costumes are enough
+and there should just be a giant repository of "other" things that
+can happen at any time
 
-stories - 3 part things
+Ideally - 
+each costume would have many celebration animations
+each costume should have several eating animations
+
+
+For now -
+
+costumes just unlock default animations
+and add a new 'dance' animation if I can find one
+
+Clicking pusheen will make pusheen dance with a costume related animation
+or perhaps cycle the current animation
+
+move the action buttons to a menu button
+
+food doesn't level up
+
+how random shoud the pusheen dances be? 
+thre are clearly some celebrating animations
+
+and I want the costume thing to exist, becuaes it is cute
+soooooooooooooo
+
+perhaps you unlock animations? 
+like, EVERY SINGLE ANIMATION
+
+but it is very very cute to have a unicorn pusheen that you can cycle through. 
+
+some animations ar enot worthy of costuming... but maybe they are all worhty 
+of costuming....
+
+maybe not call them costuems, that changes my idea of the thing and sets it in a very
+DLC orientation. perhaps it is like the facebook sticker thing where you get them all
+
+should we make it all abut pusheen? i dunno.
+NO. this should be modular. expect / pretend like another character can sit in
+
+
+feeding needs to be its own thing? 
+yeah, because there is a tomagatchi aspect to this whole thing
+
+
+
+----
+
+necessary:
+
+waiting
+celebrating
+eating
+
+
+costumes unlock default animations
+costumes add celebrate/dance/waiting animations
+clicking on the pusheen cycles through the costume based animations
+	which include the celebrate/dance/waiting animations
+
+most costumes can be simple things
+costumes are passivable - that is the main requirement
+
+Button menu:
+
+open/close menu
+
+change costume
+	- lists all costuems
+random costume
+
+
+
+
+--- Costumes ---
+
+Sherlock
+Unicorn
+Fancy
+Shades
+Kitty Perry
+Harry Potter
+R2D2
+3D pusheen
+Cupid
+Santa
+Food Pusheens
+Techno
+Giant pusheen
+Stormy the cat
+Uniqlo pusheen
+mustache pusheen
+halloween pusheen
+Career pusheen
+4th of july pusheen
+lazy pusheen
+batman
+celebrity pusheen
+16-bit pusheen
+pokemon pusheen
+my little pusheen
+skyrim pusheen
+
+/////////////////
+/////////////////
+
+
+leveling up: every 7 levels, you gain a new costume
+
+
 
 
 -- interaction
@@ -51,12 +164,14 @@ var STORAGE_STR = "storage";
 var Avatar = can.Map.extend({}, {
 	init: function(){
 
-		this.attr('level', this.getLevel());
+		this.xpPerLevel = 7;
+
+		this.attr('xp', this.getXP());
+		this.updateLevel();
 
 		this.name = "pusheen";
 
 		this.animationTimeout = null;
-		this.mainImg = undefined;
 
 		// Resets an edited gif to have infinite loop
 		// $ gifsicle -b pusheen_happy.gif --loopcount
@@ -88,8 +203,10 @@ var Avatar = can.Map.extend({}, {
 		this.attr('isBusy', false);
 
 		this.currentPartyImgNum = -1;
-
 		this.animationTimeout = -1;
+
+
+
 
 		this.render();
 		
@@ -98,33 +215,11 @@ var Avatar = can.Map.extend({}, {
 	render: function(){
 		this.div = $("<div id='avatar-wrap'>");
 		$('body').append(this.div);
-
-		// // Do can.js things with this
-		// Avatar.prototype.render = function(){
-		// 	var div = $("<div id='avatar-wrap'>");
-		// 	var img = $("<img class='avatar-img' id='avatar-1'>");
-
 		this.control = new AvatarControl( this.div, {avatar: this});
-		// 	img.attr('src', this.normalSrc);
-		// 	img.attr('loop', true);
-
-		// 	div.append(img);
-
-		// 	$('body').append(div);
-
-		// 	this.mainImg = img;
-		// }
 	},
 
-	levelUp: function(){
-		this.level++;
-	},
 
-	// Moved this stuff to the avatar_control
-	onLevelChange: function(amount){
-		// This should track internal changes.
-		// the control is in charge of view changes
-	},
+	// ======= Animation related Code ======== //
 
 	toNormal: function(){
 		this.attr("currentSrc", this.normalSrc);
@@ -216,61 +311,87 @@ var Avatar = can.Map.extend({}, {
 		}, Util.getRandomInt(options.duration - 400, options.duration + 400));
 	},
 
-	checkLevel: function(){
-		var level = localStorage.getItem(STORAGE_STR);
-		if (level == null){
+
+	// ===== XP related code ====== //
+
+	// Moved this stuff to the avatar_control
+	onXPChange: function(amount){
+		// This should track internal changes.
+		// the control is in charge of view changes
+		this.updateLevel();
+	},
+
+	checkXP: function(){
+		var xp = localStorage.getItem(STORAGE_STR);
+		if (xp == null){
 			localStorage.setItem(STORAGE_STR, 0);
 		}
 	},
 
-	getLevel: function(){
-		this.checkLevel();
+	getXP: function(){
+		this.checkXP();
 
 		return localStorage.getItem(STORAGE_STR);
 	},
 
-	changeLevel: function(val){
-		this.checkLevel();
+	changeXP: function(val){
+		this.checkXP();
 
-		var level = parseInt(localStorage.getItem(STORAGE_STR));
-		level += val;
-		lastLevelIncrease = val;
+		var xp = parseInt(localStorage.getItem(STORAGE_STR));
+		xp += val;
+		this.lastXPIncrease = val;
 
+		// console.log(lastXPIncrease)
 
-		this.attr('level', level);
+		this.attr('xp', xp);
 		// Here is where we pass it on
-		this.onLevelChange(val);
+		this.onXPChange(val);
 
-		localStorage.setItem(STORAGE_STR, level);
+
+		localStorage.setItem(STORAGE_STR, xp);
 	},
 
-	increaseLevel: function(amount){
+	increaseXP: function(amount){
 		var amt = amount == undefined ? 1 : amount;
 
-		this.checkLevel();
-		this.changeLevel(amt);
+		this.checkXP();
+		this.changeXP(amt);
 	},
 
-	decreaseLevel: function(amount){
+	decreaseXP: function(amount){
 		var amt = amount == undefined ? 1 : amount;
 
-		this.checkLevel();
-		this.changeLevel( -amt );
+		this.checkXP();
+		this.changeXP( -amt );
 	},
 
 
-	undoLevelChange: function(){
-		this.checkLevel();
-		this.changeLevel( -lastLevelIncrease );
+	undoXPChange: function(){
+		this.checkXP();
+		this.changeXP( -this.lastXPIncrease );
 	},
 
-	alertLevel: function(){
+	alertXP: function(){
 		// not using this anymore
-		return;
+		// return;
 
-		var str = "Level: " + this.getLevel()
+		var str = "XP: " + this.getXP()
 		console.log(str);
 		// alert(str);
+	},
+
+	// ===== Level related code ====== //
+
+	isNewLevel: function(){
+		return (this.xp % this.xpPerLevel) == 0;
+	},
+
+	updateLevel: function(){
+		this.attr('level', this.getLevel());
+	},
+
+	getLevel: function(){
+		return Math.floor(this.xp / this.xpPerLevel) + 1;
 	}
 });
 

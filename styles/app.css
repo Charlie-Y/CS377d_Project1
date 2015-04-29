@@ -2,6 +2,25 @@
   font-family: pusheenFont;
   src: url(./pusheenFont.ttf);
 }
+@-webkit-keyframes fadeOutUpWait {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+}
+.fadeOutUpWait {
+  -webkit-animation-name: fadeOutUpWait;
+}
+
 #avatar-wrap {
   min-width: 200px;
   max-width: 200px;
@@ -17,6 +36,9 @@
   z-index: 3;
 }
 #avatar-wrap .hide {
+  display: none !important;
+}
+#avatar-wrap .no {
   display: none !important;
 }
 #avatar-wrap .avatar-img {
@@ -39,7 +61,7 @@
   z-index: 4;
   left: 0;
   right: 0;
-  top: -5px;
+  top: -25px;
   text-align: center;
   display: block;
 }

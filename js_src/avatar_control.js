@@ -11,7 +11,7 @@ var AvatarControl = can.Control.extend({
 		foodButtonClass: "food",
 		playButtonClass: "play",
 		anyButtonClass: "any",
-		isDev: false
+		isDev: true
 	}
 },{
 	init: function(el, options){
@@ -24,7 +24,7 @@ var AvatarControl = can.Control.extend({
 	// 	console.log("Level changed from " + oldVal + " to " + newVal);
 	// },
 
-	"{avatar} level": function(avatar, eventType, newVal, oldVal){
+	"{avatar} xp": function(avatar, eventType, newVal, oldVal){
 		// console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
 
@@ -35,25 +35,40 @@ var AvatarControl = can.Control.extend({
 				duration: 1500	
 			})
 
-			this.showLevelUp(amount);
+			// Hum, what to do if many things appear
+			if (!avatar.isNewLevel()){
+				this.showXPUp(amount);
+			}
 		}
 
 	},
 
+	"{avatar} level": function(avatar, eventType, newVal, oldVal){
+
+		var amount = newVal - oldVal;
+
+		if (amount > 0){
+			if (avatar)
+
+			this.showLevelUp()
+		}
+
+	},
 
 
 	".level-up-button click": function(el, ev){
 
-		this.showLevelUp(4);
+		// this.showLevelUp();
+		this.showXPUp(5);
 	},
 
 	// show the buttons
 	".{imgClass} click": function(el, ev ){
-		if (!this.showingActionButtons){
-			this.showActionButtons();
-		}	else {
-			this.hideActionButtons();
-		}
+		// if (!this.showingActionButtons){
+		// 	this.showActionButtons();
+		// }	else {
+		// 	this.hideActionButtons();
+		// }
 
 	},
 
@@ -139,10 +154,10 @@ var AvatarControl = can.Control.extend({
 	},
 
 	// pops up a little animation...
-	showLevelUp: function(amount){
+	showXPUp: function(amount){
 
 		for (var i = 0; i < amount; i++){
-			console.log("showLevelUp");
+			// console.log("showLevelUp");
 			var _this = this;
 
 			setTimeout(function(){
@@ -150,13 +165,20 @@ var AvatarControl = can.Control.extend({
 				_this.showPopupMessage({
 					txt: "+1",
 					// color: 
-					randomLocation: true
+					randomLocation: amount != 1
 				});
-			}, 70 * i);
+			}, 150 * i);
 		}
 
 	},
 
+
+	showLevelUp: function(){
+		this.showPopupMessage({
+			txt: "Level Up!",
+			color: "#4285f4" // chrome inbox header color
+		});
+	},
 	/*
 	
 	Popups up a little message thingy
@@ -176,14 +198,14 @@ var AvatarControl = can.Control.extend({
 			return;
 		}
 
-		var message = $("<div class='level-up-message animated fadeOutUp'>");
+		var message = $("<div class='level-up-message animated fadeOutUpWait'>");
 
 		message.text( options.txt);
 
 		// expected to short circtui on failures
 		if (options.randomLocation != undefined && options.randomLocation){
 			// randomly perturb the +1s
-			message.css('width', Util.getRandomInt(80, 120) + "%");
+			message.css('width', Util.getRandomInt(50, 150) + "%");
 			message.css('top', Util.getRandomInt(-10, 0) + "px");
 		}
 
