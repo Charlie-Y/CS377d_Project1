@@ -177,7 +177,7 @@ var Avatar = can.Map.extend({}, {
 
 		this.attr('xp', this.getXP());
 		this.updateLevel();
-
+		// this.updateLevelPercent();
 
 		this.name = "pusheen";
 
@@ -329,6 +329,7 @@ var Avatar = can.Map.extend({}, {
 	onXPChange: function(amount){
 		// This should track internal changes.
 		// the control is in charge of view changes
+		// this.updateLevelPercent();
 		this.updateLevel();
 	},
 
@@ -398,6 +399,7 @@ var Avatar = can.Map.extend({}, {
 	},
 
 	updateLevel: function(){
+
 		this.attr('level', this.getLevel());
 	},
 
@@ -426,7 +428,8 @@ var Avatar = can.Map.extend({}, {
 
 		this.attr('normalSrc', costume.normalSrc);
 		this.attr('currentSrc', costume.normalSrc);
-	}
+	},
+
 
 });
 

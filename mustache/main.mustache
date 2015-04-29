@@ -4,13 +4,27 @@
 <img class="{{imgClass}}" id="avatar-1" src="{{avatar.currentSrc}}">
 
 
+<div class="level-info sneak">
+	<!--XP: {{avatar.xp}}-->
+	<span class="level">Level {{avatar.level}}</span>	
+
+	<div class="level-bar-wrap">
+		<div class="level-bar-progress {{#animateLevelProgress}}hasTransition{{/animateLevelProgress}}" style="width:{{levelPercent}}%;">
+		</div>
+	</div>
+</div>
+
+
 <div class="action-buttons">
 	<button class="button action-button {{costumeButtonClass}} sneak"> Change </button>
 	<button class="button action-button {{foodButtonClass}} sneak"> Feed </button>
 	<button class="button action-button {{statButtonClass}} sneak"> ? </button>
-	<button class="button {{menuButtonClass}} "> ? </button>
+	<button class="button {{menuButtonClass}} "> ... </button>
 
 	<div class="costumes hide ">
+		<div class="corner-close {{costumeButtonClass}}">
+			x
+		</div>
 		{{#each costumes}}		
 			{{!name}}
 			<div class="costume-img-wrap" {{data 'costume'}}>

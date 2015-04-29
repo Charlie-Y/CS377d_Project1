@@ -1,5 +1,6 @@
 @import "compass/css3/border-radius";
 @import "compass/css3/transition";
+@import "compass/css3/box-shadow";
 
 $pusheen-background: #fcf0e4;
 $pusheen-font-color: #66482e;
@@ -53,6 +54,7 @@ $pusheen-font-color: #66482e;
 	// a z-index of <3 puts it under the action icons
 	// a z-index of >21 puts it over the compose buttons
 	z-index: 3;
+	@include box-shadow(0 4px 8px rgba(0,0,0,.28));
 
 
 
@@ -82,6 +84,7 @@ $pusheen-font-color: #66482e;
 		cursor: pointer;
 
 		z-index: 3;
+
 	}
 
 	.level-up-message{
@@ -95,7 +98,7 @@ $pusheen-font-color: #66482e;
 		z-index: 4;
 		left:0;
 		right:0;
-		top:-25px; 
+		top:-95px; 
 
 		// width: 100px;
 		text-align: center;
@@ -103,9 +106,61 @@ $pusheen-font-color: #66482e;
 		
 	}
 
+	.level-info{
+		text-align: center;
+		width: 100%;
+
+		box-sizing: border-box;
+		padding: 10px;
+
+		position: absolute;
+		top: -70px;
+
+		background: $pusheen-background;
+		@include border-radius(5px);
+		@include box-shadow(0 4px 8px rgba(0,0,0,.13));
+
+
+		.level{
+			font-family: pusheenFont;
+			font-size: 20px;
+
+		}
+
+		.level-bar-wrap{
+			position: relative;
+			width: 90%;
+			left: 5%;
+			// background: black;
+			background: darken($pusheen-background, 20%);
+			height: 15px;
+
+			@include border-radius(7px);
+
+			.level-bar-progress{
+				@include border-radius(7px);
+
+				position: relative;
+				left:0;
+				height: 100%;
+				width: 0;
+
+				// background: darken($pusheen-background, 40%);
+				background: #5ED311;
+
+			}
+
+			.level-bar-progress.hasTransition{
+				@include transition(all .1s ease-out);
+				@include transition-delay(.3s);
+			}
+		}
+
+	}
+
 	.action-buttons{
 		position: absolute;
-		top:-30px;
+		top:0px;
 		left: -75px;
 		z-index: 2;
 
@@ -128,7 +183,7 @@ $pusheen-font-color: #66482e;
 			color: $pusheen-font-color;
 			// position: absolute;
 
-
+			@include box-shadow(0 4px 8px rgba(0,0,0,.28));
 			@include transition(all .1s ease-in);
 
 			&:hover{
@@ -144,28 +199,28 @@ $pusheen-font-color: #66482e;
 			}
 
 			&:nth-child(1){
-				left: 56px;
-				margin-bottom:0;
+				left: 26px;
+				// margin-bottom:0;
 			}	
 
 			&:nth-child(2){
-
+				left: 4px;
 			}
 
 			&:nth-child(3){
-				left: 10px;
+				left: 20px;
 				margin-bottom: 3px;
 			}
 
-			&:nth-child(4){
-				left: 34px;
-			}
+			// &:nth-child(4){
+			// 	left: 34px;
+			// }
 		}
 
 		// need to position these so they look like they are in a circle
 		.button.close{
 			position: absolute;
-			top: -40px;
+			top: -10px;
 			left: 25px;
 
 			$dim: 60px;
@@ -179,7 +234,11 @@ $pusheen-font-color: #66482e;
 
 		}
 
-		.button.food{
+		.button.menu{
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			position:absolute;
+			bottom: -86px;
+			left: 145px;
 		}
 
 	}
@@ -189,13 +248,15 @@ $pusheen-font-color: #66482e;
 		display: flex;
 		flex-wrap: wrap;
 		// top:-20px;
-		top:10px;
+		top:-35px;
 		right: 100px;
 
 		padding: 20px;
 		padding-right: 30px;
 
 		max-height: 220px;
+		min-height: 220px;
+
 		overflow-x: hidden;
 		overflow-y: scroll;
 
@@ -263,7 +324,7 @@ $pusheen-font-color: #66482e;
 				display: none;
 				white-space: nowrap;
 
-				background: $pusheen-background;
+				// background: $pusheen-background;
 				color: $pusheen-font-color;
 				// @include border-radius(5px);
 				// padding: 20px 15px;
@@ -292,6 +353,23 @@ $pusheen-font-color: #66482e;
 			margin: auto;
 			max-height: $dim ;
 			height: $dim;
+		}
+
+		.corner-close{
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			padding: 10px;
+			font-size: 17px;
+			cursor: pointer;
+			color: $pusheen-font-color;
+			font-family: pusheenFont;
+			&:hover{
+				color: tint($pusheen-font-color, 40%);
+			}
+			&:active{
+				color: darken($pusheen-font-color, 40%);
+			}
 		}
 
 	}

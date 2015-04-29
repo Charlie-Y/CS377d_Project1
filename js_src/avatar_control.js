@@ -11,12 +11,16 @@ var AvatarControl = can.Control.extend({
 		costumeButtonClass: "costume",
 		foodButtonClass: "food",
 		statButtonClass: "stat",
-		isDev: false
+		isDev: true
 	}
 },{
 	init: function(el, options){
 		this.avatar = options.avatar;
 		this.options.costumes = this.avatar.costumes;
+
+		this.options.levelPercent = can.compute(0);
+		this.options.animateLevelProgress = can.compute(true);
+		this.updateLevelPercent();
 
 		this.element.html(can.view( Util.extentionStr + 'mustache/main.mustache', options));
 		this.showingActionButtons = false;
@@ -36,6 +40,9 @@ var AvatarControl = can.Control.extend({
 	"{avatar} xp": function(avatar, eventType, newVal, oldVal){
 		// console.log("Level changed from " + oldVal + " to " + newVal);
 		var amount = newVal - oldVal;
+
+		this.updateLevelPercent(newVal, oldVal);
+
 
 		if (amount > 0){
 
@@ -63,8 +70,10 @@ var AvatarControl = can.Control.extend({
 
 	".level-up-button click": function(el, ev){
 
-		this.showLevelUp();
+		// this.showLevelUp();
 		// this.showXPUp(5);
+		this.avatar.increaseXP(1);
+		// this.updateLevelPercent();
 	},
 
 	// show the buttons
@@ -136,11 +145,11 @@ var AvatarControl = can.Control.extend({
 
 		this.showingActionButtons = true;
 		var buttons = this.element.find('.action-buttons .action-button')
-		buttons.removeClass('sneak bounceOut')
-		buttons.addClass('animated bounceIn');
 
+
+		buttons.removeClass('sneak bounceOut');
+		buttons.addClass('animated bounceIn');
 		buttons.unbind();
-		
 		buttons.bind(Util.animEndStr, function(){
 			// console.log("showActionButtons one");
 			$(this).removeClass('bounceIn');
@@ -148,23 +157,38 @@ var AvatarControl = can.Control.extend({
 			$(this).unbind();
 		})
 
+		var levelInfo = this.element.find('.level-info');
+		levelInfo.removeClass('sneak bounceOut')
+		levelInfo.addClass('animated bounceIn');
+		levelInfo.unbind();
+		levelInfo.bind(Util.animEndStr, function(){
+			// console.log("showActionButtons one");
+			$(this).removeClass('bounceIn');
+
+			$(this).unbind();
+		})		
+
 	},
 
 	hideActionButtons: function(){
 		// console.log("hideActionButtons");
 		this.showingActionButtons = false;
 		var buttons = this.element.find('.action-buttons .action-button')
-
 		buttons.removeClass('bounceIn');
 		buttons.addClass('bounceOut');
-
 		buttons.unbind();
-
-		// hide the costumes as well
-		this.costumeEl.slideUp();
-		this.showingCostumes = false;
-
 		buttons.bind(Util.animEndStr, function(){
+			// console.log("hideActionButtons one");
+			$(this).addClass('sneak');
+			$(this).removeClass('bounceOut');
+			$(this).unbind();
+		})
+
+		var levelInfo = this.element.find('.level-info');
+		levelInfo.removeClass('bounceIn');
+		levelInfo.addClass('bounceOut');
+		levelInfo.unbind();
+		levelInfo.bind(Util.animEndStr, function(){
 			// console.log("hideActionButtons one");
 
 			$(this).addClass('sneak');
@@ -172,6 +196,9 @@ var AvatarControl = can.Control.extend({
 
 			$(this).unbind();
 		})
+
+		this.costumeEl.slideUp();
+		this.showingCostumes = false;
 	},
 
 	// pops up a little animation...
@@ -223,6 +250,7 @@ var AvatarControl = can.Control.extend({
 		}
 
 		var message = $("<div class='level-up-message'>");
+		var levelInfo = this.element.find(".level-info");
 
 		message.text( options.txt);
 
@@ -239,12 +267,68 @@ var AvatarControl = can.Control.extend({
 			message.css('color', options.color)
 		}
 
+
+		if (!this.showingActionButtons){
+			levelInfo.removeClass('sneak');
+		}
+
 		message.addClass('animated fadeOutUpWait');
  
 		$(this.element).append(message);
+
+		clearTimeout( this.anim2Timeout);
+
+		var _this = this;
 		message.one(Util.animEndStr, function(){
 			message.remove();
+
+			_this.anim2Timeout = setTimeout(fuction(){
+				if (!_this.showingActionButtons){
+					levelInfo.addClass('sneak');
+				}
+			}, 500)
 		})
+	},
+
+
+	updateLevelPercent: function(newVal, oldVal){
+		var a = this.avatar;
+		var amount = newVal - oldVal;
+		// var timesLeveled = Math.floor( (amount) / this.avatar.xpPerLevel);
+
+
+		// console.log("timesLeveled: " + timesLeveled);
+
+		// clearTimeout(this.levelPercentTimeout);
+
+		// for (var i = 0; i < timesLeveled; i++){
+		// 	this.options.levelPercent(100);
+		// 	setTimeout(function(){
+		// 		_this.options.levelPercent(0);
+		// 	}, 1500);
+		// }
+
+
+		var val = (( a.xp % a.xpPerLevel ) / (a.xpPerLevel)).toFixed(2) * 100;
+
+		clearTimeout(this.levelPercentTimeout);
+
+		if (val == 0 && amount > 0){
+			// this.options.attr('levelPercent', 100);
+			this.options.levelPercent(100);
+
+			var _this = this;
+			setTimeout(function(){
+				_this.options.levelPercent(0);
+			}, 1500);
+
+		} else {
+			// this.options.attr('levelPercent', val);
+			this.options.levelPercent(val);
+		}
+		// console.log("updateLevelPercent: " + val);
+		// this.options.levelPercent(val);
+
 	}
 
 });

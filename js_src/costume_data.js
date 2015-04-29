@@ -60,16 +60,17 @@ var c = can.Construct.extend({},
 var data = new can.List([
 	new c('Pusheen the Cat', 'normal', 1, 1, 0),
 	new c('Lazy Pusheen', 'lazy', 1, 1, 0),
-	new c('Pusheenicorn', 'pusheenicorn', 1, 1, 0),
 	new c('Sherlock Pusheen', 'sherlock', 1, 1, 1),
+	new c('Pusheen in Bread', 'bread', 1, 0, 0),
 	new c('Fancy Pusheen', 'fancy', 1, 1, 1),
 	new c('Pusheen in Shades', 'shades', 3, 1, 0),
 	new c('Catniss Pusheen', 'catniss', 1, 0, 0),
 	new c('Pusheen the Adventurer', 'adventuretime', 1, 0, 0),
-	new c('Pusheen in Bread', 'bread', 1, 0, 0),
+	new c('Dragonborn Pusheen', 'dragonborn', 1, 0, 0),
 	new c('Sailor Mew', 'sailormew', 1, 0, 0),
 	new c('R2P2', 'r2d2', 1, 0, 0),
-	new c('Kitty Perry', 'kittyperry', 1, 0, 0)
+	new c('Kitty Perry', 'kittyperry', 1, 0, 0),
+	new c('Pusheenicorn', 'pusheenicorn', 1, 1, 0)
 
 ]);
 
