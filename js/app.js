@@ -489,7 +489,7 @@ var AvatarControl = can.Control.extend({
 		foodButtonClass: "food",
 		playButtonClass: "play",
 		anyButtonClass: "any",
-		isDev: true
+		isDev: false
 	}
 },{
 	init: function(el, options){
@@ -542,11 +542,11 @@ var AvatarControl = can.Control.extend({
 
 	// show the buttons
 	".{imgClass} click": function(el, ev ){
-		// if (!this.showingActionButtons){
-		// 	this.showActionButtons();
-		// }	else {
-		// 	this.hideActionButtons();
-		// }
+		if (!this.showingActionButtons){
+			this.showActionButtons();
+		}	else {
+			this.hideActionButtons();
+		}
 
 	},
 
@@ -7478,6 +7478,9 @@ define('can/can', [
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
+var $ = require('jquery');
+var _can = require('./can.jquery.js');
+
 /*
 
 This just exports a giant JS object which has data on it
@@ -7520,9 +7523,6 @@ food: [base]_food_[num] - played when you press the feed button, don't do for no
 */
 
 
-function CD(){
-
-}
 
 var data = {};
 module.exports = data;
@@ -7536,7 +7536,7 @@ module.exports = data;
 
 
 
-},{}],6:[function(require,module,exports){
+},{"./can.jquery.js":4,"jquery":8}],6:[function(require,module,exports){
 var $ = require('jquery'); 
 var Util = require('./util.js');
 
@@ -7553,15 +7553,15 @@ and passing them to the
 
 // THESE ARE CHANGING... UH OH
 
-var BODY_SELECTOR = ".c1"; // oh man this changes
+var BODY_SELECTOR = "body"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
 var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
-var UNDO_SELECTOR = "[js-action='global.undo']";
-var UNDO_PARENT_SELECTOR = ".IbRB2e";
+var UNDO_SELECTOR = "[jsaction='global.undo']";
+var UNDO_PARENT_SELECTOR = ".IbRB2e"; // maybe can change as well
 
 var lastLevelIncrease = 0;
 

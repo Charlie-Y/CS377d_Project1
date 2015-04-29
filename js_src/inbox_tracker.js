@@ -14,15 +14,15 @@ and passing them to the
 
 // THESE ARE CHANGING... UH OH
 
-var BODY_SELECTOR = ".c1"; // oh man this changes
+var BODY_SELECTOR = "body"; // oh man this changes
 var MARK_DONE_SELECTOR = ".itemIconDone";
 var MARK_UNDONE_SELECTOR = ".itemIconMarkedDone";
 var SWEEP_SELECTOR= "button.ds"; //[title='Sweep (mark unpinned items as done)'] // OH MAN THIS CHANGES
 var SWEEP_LIST_SELECTOR = ".DsPmj"; // OH 
 var SWEEP_ITEM_SELECTOR = ".scroll-list-item";
 
-var UNDO_SELECTOR = "[js-action='global.undo']";
-var UNDO_PARENT_SELECTOR = ".IbRB2e";
+var UNDO_SELECTOR = "[jsaction='global.undo']";
+var UNDO_PARENT_SELECTOR = ".IbRB2e"; // maybe can change as well
 
 var lastLevelIncrease = 0;
 
