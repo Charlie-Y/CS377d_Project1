@@ -48,7 +48,7 @@ var AvatarControl = can.Control.extend({
 
 			this.avatar.playAnimation({
 				type: 'excited',
-				duration: 1500	
+				duration: 1900	
 			})
 
 			// Hum, what to do if many things appear
@@ -62,8 +62,20 @@ var AvatarControl = can.Control.extend({
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
 		var amount = newVal - oldVal;
 		if (amount > 0){
-			if (avatar)
-			this.showLevelUp()
+			// if (avatar)
+			this.showLevelUp();
+
+			var _this = this;
+			setTimeout(function(){
+				_this.showPopupMessage({
+					txt: "New Pusheen Unlocked!",
+					color: "#4285f4", // chrome inbox header color
+					duration: 6000
+					// randomLocation:
+				});
+			}, 1000);
+
+
 		}
 	},
 
@@ -128,7 +140,7 @@ var AvatarControl = can.Control.extend({
 
 	".costume-img-wrap click": function(el, ev){
 		var costume = el.data('costume');
-		console.log(costume);
+		// console.log(costume);
 
 		this.avatar.changeCostume(costume);
 

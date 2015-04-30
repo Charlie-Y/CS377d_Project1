@@ -273,7 +273,7 @@ var Avatar = can.Map.extend({}, {
 		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
 		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
-		this.numPartyImgs = 11;
+		this.numPartyImgs = 17;
 
 		// this.allStrs = []
 		// for(var i = 0; i < this.numPartyImgs; i++ ) {
@@ -603,7 +603,7 @@ var AvatarControl = can.Control.extend({
 
 			this.avatar.playAnimation({
 				type: 'excited',
-				duration: 1500	
+				duration: 1900	
 			})
 
 			// Hum, what to do if many things appear
@@ -617,8 +617,20 @@ var AvatarControl = can.Control.extend({
 	"{avatar} level": function(avatar, eventType, newVal, oldVal){
 		var amount = newVal - oldVal;
 		if (amount > 0){
-			if (avatar)
-			this.showLevelUp()
+			// if (avatar)
+			this.showLevelUp();
+
+			var _this = this;
+			setTimeout(function(){
+				_this.showPopupMessage({
+					txt: "New Pusheen Unlocked!",
+					color: "#4285f4", // chrome inbox header color
+					duration: 6000
+					// randomLocation:
+				});
+			}, 1000);
+
+
 		}
 	},
 
@@ -683,7 +695,7 @@ var AvatarControl = can.Control.extend({
 
 	".costume-img-wrap click": function(el, ev){
 		var costume = el.data('costume');
-		console.log(costume);
+		// console.log(costume);
 
 		this.avatar.changeCostume(costume);
 

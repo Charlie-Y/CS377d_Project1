@@ -200,7 +200,7 @@ var Avatar = can.Map.extend({}, {
 		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
 		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
-		this.numPartyImgs = 11;
+		this.numPartyImgs = 17;
 
 		// this.allStrs = []
 		// for(var i = 0; i < this.numPartyImgs; i++ ) {
