@@ -246,7 +246,7 @@ var STORAGE_STR = "storage";
 var Avatar = can.Map.extend({}, {
 	init: function(){
 
-		this.xpPerLevel = 7;
+		this.xpPerLevel = 5;
 
 		this.attr('xp', this.getXP());
 		this.updateLevel();
@@ -273,7 +273,7 @@ var Avatar = can.Map.extend({}, {
 		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
 		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
-		this.numPartyImgs = 9;
+		this.numPartyImgs = 11;
 
 		// this.allStrs = []
 		// for(var i = 0; i < this.numPartyImgs; i++ ) {
@@ -385,6 +385,7 @@ var Avatar = can.Map.extend({}, {
 				break;
 			case 'any':
 				this.toAny();
+				break;
 			default:
 				return;
 		}
@@ -474,6 +475,10 @@ var Avatar = can.Map.extend({}, {
 	updateLevel: function(){
 
 		this.attr('level', this.getLevel());
+		// this.checkCostumes();
+		if (this.costumes != undefined){
+			this.checkCostumes();
+		}
 	},
 
 	getLevel: function(){
@@ -485,23 +490,55 @@ var Avatar = can.Map.extend({}, {
 
 	loadCostumes: function(){
 		this.costumes = CostumeData;
+		this.checkCostumes();
 
 		if (localStorage.getItem('normal_costume') === 'true'){
 			this.attr('normalSrc', localStorage.getItem('normal_src'));	
 			this.attr('currentSrc', localStorage.getItem('normal_src'));
 		}
 		// console.log(this.costumes);
+		if (this.attr('currentCostume') == undefined){
+			this.attr('currentCostume', this.costumes.attr(0));
+		}
+	},
+
+	checkCostumes: function(){
+		// console.log('checkCostumes');
+
+		var freeCostumes = 4;
+		var _this = this;
+
+		this.costumes.forEach(function(element, index, list) {
+		    // list.attr(index, element * element);
+		    if (index < freeCostumes + _this.level){
+		    	// console.log('show: ' + element.name);
+		    	element.show(true);
+		    }
+
+		});
+	},
+
+	"currentCostume change": function(e) {
+		console.log("foo");
 	},
 
 	changeCostume:function (costume){
 		console.log("changing to " + costume.name);
-
-		localStorage.setItem('normal_costume', 'true');
-		localStorage.setItem('normal_src', costume.normalSrc);
-
-		this.attr('normalSrc', costume.normalSrc);
-		this.attr('currentSrc', costume.normalSrc);
+		this.attr('currentCostume', costume);
+		this.setNormalSrc(costume.normalSrc);
 	},
+
+	setNormalSrc: function(normalSrc){
+		localStorage.setItem('normal_costume', 'true');
+		localStorage.setItem('normal_src', normalSrc);
+
+		this.attr('normalSrc', normalSrc);
+		this.attr('currentSrc', normalSrc);
+	},
+
+	randomNormalFromCostume: function(){
+		console.log(randomSrc);
+	}
 
 
 });
@@ -529,7 +566,7 @@ var AvatarControl = can.Control.extend({
 		costumeButtonClass: "costume",
 		foodButtonClass: "food",
 		statButtonClass: "stat",
-		isDev: true
+		isDev: false
 	}
 },{
 	init: function(el, options){
@@ -625,6 +662,13 @@ var AvatarControl = can.Control.extend({
 			})
 	},
 
+	".{statButtonClass} click": function(el, evl){
+		this.avatar.playAnimation({
+				type: 'any',
+				duration: 2500	
+			})
+	},
+
 	".{costumeButtonClass} click": function(el, evl){
 		if (this.showingCostumes){
 			this.costumeEl.slideUp();
@@ -639,15 +683,18 @@ var AvatarControl = can.Control.extend({
 
 	".costume-img-wrap click": function(el, ev){
 		var costume = el.data('costume');
+		console.log(costume);
+
 		this.avatar.changeCostume(costume);
 
 	},
 
-	".{imgClass} mousemove": function(el, ev){
-		// console.log('mousemove');
-		// if (!this.avatar.isBusy){
-		// 	this.avatar.toExcited();
-		// }
+	".{imgClass} click": function(el, ev){
+		// this.avatar.randomNormalFromCostume();
+	},
+
+	"{avatar} currentCostume": function(avatar, eventType, newVal, oldVal){
+		// console.log('changeCostume: ' + newVal);
 	},
 
 	".{imgClass} mouseleave": function(el, ev){
@@ -794,12 +841,17 @@ var AvatarControl = can.Control.extend({
  
 		$(this.element).append(message);
 
+		clearTimeout( this.anim2Timeout);
+
 		var _this = this;
 		message.one(Util.animEndStr, function(){
 			message.remove();
-			if (!_this.showingActionButtons){
-				levelInfo.addClass('sneak');
-			}
+
+			_this.anim2Timeout = setTimeout(function(){
+				if (!_this.showingActionButtons){
+					levelInfo.addClass('sneak');
+				}
+			}, 500)
 		})
 	},
 
@@ -7674,6 +7726,40 @@ var c = can.Construct.extend({},
 		this.foodNum = foodNum || 0 ;
 
 		this.normalSrc = Util.extentionStr + "images/" + this.base + "_" + "normal" + "_0.gif";
+
+		this.show = can.compute(false);
+
+		this.generateStrs();
+	},
+
+	generateStrs: function(){
+
+		this.normalSrcs = this.strArray('normal', this.normalNum);
+		this.excitedSrcs = this.strArray('excited', this.excitedNum);
+		this.foodSrcs = this.strArray('food', this.foodNum);
+
+		this.allSrcs = [];
+
+		this.allSrcs = this.allSrcs.concat(this.normalSrcs);
+		this.allSrcs = this.allSrcs.concat(this.excitedSrcs);
+		this.allSrcs = this.allSrcs.concat(this.foodSrcs);
+
+		// console.log(this.allSrcs);
+	},
+
+	strArray: function(type, num){
+		var arr = [];
+		for(var i = 0; i < num; i ++){
+			var s = this.srcStr(type, i) ;
+			// console.log(s);
+			arr.push(s);
+		}
+		// console.log(arr);
+		return arr;
+	},	
+
+	srcStr: function(type, num){
+		return Util.extentionStr + "images/" + this.base + "_" + type + "_" + num.toString() + ".gif";
 	}
 })
 
@@ -7681,6 +7767,9 @@ var c = can.Construct.extend({},
 var data = new can.List([
 	new c('Pusheen the Cat', 'normal', 1, 1, 0),
 	new c('Lazy Pusheen', 'lazy', 1, 1, 0),
+	new c('A Pie', 'pie', 1, 0, 0),
+	new c('ZZZZzzzz', 'sleep', 1, 0, 0),
+	new c('Baker Pusheen', 'baker', 1, 0, 0),
 	new c('Sherlock Pusheen', 'sherlock', 1, 1, 1),
 	new c('Pusheen in Bread', 'bread', 1, 0, 0),
 	new c('Fancy Pusheen', 'fancy', 1, 1, 1),

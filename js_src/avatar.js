@@ -173,7 +173,7 @@ var STORAGE_STR = "storage";
 var Avatar = can.Map.extend({}, {
 	init: function(){
 
-		this.xpPerLevel = 7;
+		this.xpPerLevel = 5;
 
 		this.attr('xp', this.getXP());
 		this.updateLevel();
@@ -200,7 +200,7 @@ var Avatar = can.Map.extend({}, {
 		this.playBaseStr = Util.extentionStr + "images/pusheen_play_";
 		this.playStrs = "adventuretime art baker breadcat burrito catniss cloudsleep cookiesearch dance doodle fancy fat fishing gangnam ghost leaf link magic magic2 nutella nyan party people perry pie potter r2d2 sailormew sandman showers sombrero sunglasses tumblr".split(" ")
 
-		this.numPartyImgs = 9;
+		this.numPartyImgs = 11;
 
 		// this.allStrs = []
 		// for(var i = 0; i < this.numPartyImgs; i++ ) {
@@ -312,6 +312,7 @@ var Avatar = can.Map.extend({}, {
 				break;
 			case 'any':
 				this.toAny();
+				break;
 			default:
 				return;
 		}
@@ -401,6 +402,10 @@ var Avatar = can.Map.extend({}, {
 	updateLevel: function(){
 
 		this.attr('level', this.getLevel());
+		// this.checkCostumes();
+		if (this.costumes != undefined){
+			this.checkCostumes();
+		}
 	},
 
 	getLevel: function(){
@@ -412,23 +417,55 @@ var Avatar = can.Map.extend({}, {
 
 	loadCostumes: function(){
 		this.costumes = CostumeData;
+		this.checkCostumes();
 
 		if (localStorage.getItem('normal_costume') === 'true'){
 			this.attr('normalSrc', localStorage.getItem('normal_src'));	
 			this.attr('currentSrc', localStorage.getItem('normal_src'));
 		}
 		// console.log(this.costumes);
+		if (this.attr('currentCostume') == undefined){
+			this.attr('currentCostume', this.costumes.attr(0));
+		}
+	},
+
+	checkCostumes: function(){
+		// console.log('checkCostumes');
+
+		var freeCostumes = 4;
+		var _this = this;
+
+		this.costumes.forEach(function(element, index, list) {
+		    // list.attr(index, element * element);
+		    if (index < freeCostumes + _this.level){
+		    	// console.log('show: ' + element.name);
+		    	element.show(true);
+		    }
+
+		});
+	},
+
+	"currentCostume change": function(e) {
+		console.log("foo");
 	},
 
 	changeCostume:function (costume){
 		console.log("changing to " + costume.name);
-
-		localStorage.setItem('normal_costume', 'true');
-		localStorage.setItem('normal_src', costume.normalSrc);
-
-		this.attr('normalSrc', costume.normalSrc);
-		this.attr('currentSrc', costume.normalSrc);
+		this.attr('currentCostume', costume);
+		this.setNormalSrc(costume.normalSrc);
 	},
+
+	setNormalSrc: function(normalSrc){
+		localStorage.setItem('normal_costume', 'true');
+		localStorage.setItem('normal_src', normalSrc);
+
+		this.attr('normalSrc', normalSrc);
+		this.attr('currentSrc', normalSrc);
+	},
+
+	randomNormalFromCostume: function(){
+		console.log(randomSrc);
+	}
 
 
 });

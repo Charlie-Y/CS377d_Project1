@@ -53,6 +53,40 @@ var c = can.Construct.extend({},
 		this.foodNum = foodNum || 0 ;
 
 		this.normalSrc = Util.extentionStr + "images/" + this.base + "_" + "normal" + "_0.gif";
+
+		this.show = can.compute(false);
+
+		this.generateStrs();
+	},
+
+	generateStrs: function(){
+
+		this.normalSrcs = this.strArray('normal', this.normalNum);
+		this.excitedSrcs = this.strArray('excited', this.excitedNum);
+		this.foodSrcs = this.strArray('food', this.foodNum);
+
+		this.allSrcs = [];
+
+		this.allSrcs = this.allSrcs.concat(this.normalSrcs);
+		this.allSrcs = this.allSrcs.concat(this.excitedSrcs);
+		this.allSrcs = this.allSrcs.concat(this.foodSrcs);
+
+		// console.log(this.allSrcs);
+	},
+
+	strArray: function(type, num){
+		var arr = [];
+		for(var i = 0; i < num; i ++){
+			var s = this.srcStr(type, i) ;
+			// console.log(s);
+			arr.push(s);
+		}
+		// console.log(arr);
+		return arr;
+	},	
+
+	srcStr: function(type, num){
+		return Util.extentionStr + "images/" + this.base + "_" + type + "_" + num.toString() + ".gif";
 	}
 })
 
@@ -60,6 +94,9 @@ var c = can.Construct.extend({},
 var data = new can.List([
 	new c('Pusheen the Cat', 'normal', 1, 1, 0),
 	new c('Lazy Pusheen', 'lazy', 1, 1, 0),
+	new c('A Pie', 'pie', 1, 0, 0),
+	new c('ZZZZzzzz', 'sleep', 1, 0, 0),
+	new c('Baker Pusheen', 'baker', 1, 0, 0),
 	new c('Sherlock Pusheen', 'sherlock', 1, 1, 1),
 	new c('Pusheen in Bread', 'bread', 1, 0, 0),
 	new c('Fancy Pusheen', 'fancy', 1, 1, 1),

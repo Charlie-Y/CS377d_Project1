@@ -11,7 +11,7 @@ var AvatarControl = can.Control.extend({
 		costumeButtonClass: "costume",
 		foodButtonClass: "food",
 		statButtonClass: "stat",
-		isDev: true
+		isDev: false
 	}
 },{
 	init: function(el, options){
@@ -107,6 +107,13 @@ var AvatarControl = can.Control.extend({
 			})
 	},
 
+	".{statButtonClass} click": function(el, evl){
+		this.avatar.playAnimation({
+				type: 'any',
+				duration: 2500	
+			})
+	},
+
 	".{costumeButtonClass} click": function(el, evl){
 		if (this.showingCostumes){
 			this.costumeEl.slideUp();
@@ -121,15 +128,18 @@ var AvatarControl = can.Control.extend({
 
 	".costume-img-wrap click": function(el, ev){
 		var costume = el.data('costume');
+		console.log(costume);
+
 		this.avatar.changeCostume(costume);
 
 	},
 
-	".{imgClass} mousemove": function(el, ev){
-		// console.log('mousemove');
-		// if (!this.avatar.isBusy){
-		// 	this.avatar.toExcited();
-		// }
+	".{imgClass} click": function(el, ev){
+		// this.avatar.randomNormalFromCostume();
+	},
+
+	"{avatar} currentCostume": function(avatar, eventType, newVal, oldVal){
+		// console.log('changeCostume: ' + newVal);
 	},
 
 	".{imgClass} mouseleave": function(el, ev){
@@ -282,7 +292,7 @@ var AvatarControl = can.Control.extend({
 		message.one(Util.animEndStr, function(){
 			message.remove();
 
-			_this.anim2Timeout = setTimeout(fuction(){
+			_this.anim2Timeout = setTimeout(function(){
 				if (!_this.showingActionButtons){
 					levelInfo.addClass('sneak');
 				}

@@ -16,7 +16,7 @@
 
 
 <div class="action-buttons">
-	<button class="button action-button {{costumeButtonClass}} sneak"> Change </button>
+	<button class="button action-button {{costumeButtonClass}} sneak"> Swap </button>
 	<button class="button action-button {{foodButtonClass}} sneak"> Feed </button>
 	<button class="button action-button {{statButtonClass}} sneak"> ? </button>
 	<button class="button {{menuButtonClass}} "> ... </button>
@@ -26,13 +26,12 @@
 			x
 		</div>
 		{{#each costumes}}		
-			{{!name}}
-			<div class="costume-img-wrap" {{data 'costume'}}>
+			<div class="costume-img-wrap {{^show}} hide {{/show}}" {{data 'costume'}}>
 				<div class="name-wrap">
 					<span class="name">{{name}}</span>
 				</div>
 				<img class="costume-img" src="{{normalSrc}}">
-			</div>	
+			</div>
 		{{/costumes}}
 	</div>
 
